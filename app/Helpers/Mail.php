@@ -170,11 +170,11 @@ class Mail
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
       curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      curl_setopt($ch, CURLOPT_HTTPHEADER, [
           'Content-Type: application/json',
           'Content-Length: ' . strlen($params),
           'accept:application/json'
-      ));
+      ]);
 
       $response = curl_exec($ch);
 
