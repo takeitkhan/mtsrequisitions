@@ -90,7 +90,7 @@
                             <div class="select" style="width: 100%">
                                 <?php
                                 //$designations = \App\Models\Designation::pluck('name', 'id');
-                                $departments = array(
+                                $departments = [
                                     '' => 'Select a department',
                                     'Accounts & Finance' => 'Accounts & Finance',
                                     'Administration'  => 'Administration',
@@ -101,7 +101,7 @@
                                     'Technical' => 'Technical',
                                     'HR' => 'HR',
                                     'Office Staff' => 'Office Staff',
-                                );
+                                ];
                                 ?>
                                 {{ Form::select('department', $departments ?? NULL, NULL, ['class' => 'input is-small']) }}
                             </div>

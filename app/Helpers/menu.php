@@ -45,7 +45,7 @@ if (!function_exists('category_sidebar_menu')) {
 if (!function_exists('delete_data')) {
     function delete_data($route, $id, $title= '')
     {
-        $html = \Form::open(array('url' => route($route, $id), 'method' => 'DELETE', 'style' => 'margin-block-end: 0em'));
+        $html = \Form::open(['url' => route($route, $id), 'method' => 'DELETE', 'style' => 'margin-block-end: 0em']);
         $html .= '<button onclick=" return confirm(\'Are you sure?\')" title="'.$title.'" type="submit" class="level-item" style="background: transparent; border: none; cursor: pointer;">
         <span class="icon is-small is-red"><i class="fas fa-trash"></i></span></button>';
         $html .= \Form::close();

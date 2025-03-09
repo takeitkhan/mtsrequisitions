@@ -135,14 +135,14 @@ class SettingController extends Controller
 
         if (isset($request->name)) {
 
-            $json = array(
+            $json = [
                 'company_name' => $request->company_name,
                 'company_slogan' => $request->company_slogan,
                 'address' => $request->address,
                 'company_phone' => $request->company_phone,
                 'company_email' => $request->company_email,
                 'company_website' => $request->company_website
-            );
+            ];
 
             $attributes = [
                 'name' => $request->name,
@@ -172,7 +172,7 @@ class SettingController extends Controller
 
         if (isset($request->name)) {
 
-            $json = array(
+            $json = [
                 'time_zone' => $request->time_zone,
                 'requisition_start' => $request->requisition_start,
                 'requisition_end' => $request->requisition_end,
@@ -182,7 +182,7 @@ class SettingController extends Controller
                 'bill_end' => $request->bill_end,
                 'bill_approval_start' => $request->bill_approval_start,
                 'bill_approval_end' => $request->bill_approval_end
-            );
+            ];
 
             $attributes = [
                 'name' => $request->name,
@@ -212,7 +212,7 @@ class SettingController extends Controller
 
         if (isset($request->name)) {
 
-            $json = array(
+            $json = [
                 'time_zone' => $request->time_zone,
               /*
                 'requisition_start' => $request->requisition_start,
@@ -229,7 +229,7 @@ class SettingController extends Controller
               'approval_time_end' => $request->approval_time_end,
               'requsition_submission_manager_end' => $request->requsition_submission_manager_end,
               'requsition_submission_cfo_end' => $request->requsition_submission_cfo_end,
-            );
+            ];
 
             $attributes = [
                 'name' => $request->name,
@@ -256,9 +256,9 @@ class SettingController extends Controller
 
         if (isset($request->name)) {
 
-            $json = array(
+            $json = [
                 'email_address' => $request->email_address,
-            );
+            ];
 
             $attributes = [
                 'name' => $request->name,
@@ -286,10 +286,10 @@ class SettingController extends Controller
 
         if (isset($request->project_lock_percentage)) {
 
-            $json = array(
+            $json = [
                 'project_lock_percentage' => $request->project_lock_percentage,
                	'cfo_restriction' => $request->cfo_restriction,
-            );
+            ];
 
             $attributes = [
                 //'name' => $request->name,

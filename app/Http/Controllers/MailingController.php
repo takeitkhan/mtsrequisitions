@@ -563,9 +563,9 @@ class MailingController extends Controller
             } else {
 
                 //dd($startdate);
-                $countSiteHead = \Tritiyo\Task\Models\Task::where('site_head', $data->resource_id)->whereBetween('task_for', array($startdate, $enddate))->groupBy('task_for')->get();
+                $countSiteHead = \Tritiyo\Task\Models\Task::where('site_head', $data->resource_id)->whereBetween('task_for', [$startdate, $enddate])->groupBy('task_for')->get();
               	//dd($countSiteHead);
-                $countResource = \Tritiyo\Task\Models\TaskSite::where('resource_id', $data->resource_id)->whereBetween('task_for', array($startdate, $enddate))->where('task_for', '!=', NULL)->groupBy('task_for')->get();
+                $countResource = \Tritiyo\Task\Models\TaskSite::where('resource_id', $data->resource_id)->whereBetween('task_for', [$startdate, $enddate])->where('task_for', '!=', NULL)->groupBy('task_for')->get();
               	//dd($countResource);
               
                 $used[] = (object)[
