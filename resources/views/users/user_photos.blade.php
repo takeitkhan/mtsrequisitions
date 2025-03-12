@@ -28,6 +28,7 @@
         ])
     </nav>
 </section>
+
 @section('column_left')
     <article class="panel is-primary">
         <div class="panel-tabs">
@@ -39,19 +40,26 @@
         </div>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('users.user_photos', $id), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off', '')) }}
+            {{ html()->form('POST', route('users.user_photos', $id))
+                ->attribute('id', 'add_user')
+                ->attribute('enctype', 'multipart/form-data') // Add this line
+                ->attribute('autocomplete', 'off')
+                ->open() 
+            }}
+
             <div class="columns">
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('avatar', 'User Avatar', array('class' => 'label')) }}
+                        {{ html()->label('User Avatar', 'avatar')->class('label') }}
                         <div class="control">
-                            <input type="file" name="avatar">
+                            {{ html()->file('avatar')->name('avatar') }}
                         </div>
                     </div>
+
                     <div class="field">
-                        {{ Form::label('signature', 'User Signature', array('class' => 'label')) }}
+                        {{ html()->label('User Signature', 'signature')->class('label') }}
                         <div class="control">
-                            <input type="file" name="signature">
+                            {{ html()->file('signature')->name('signature') }}
                         </div>
                     </div>
                 </div>
@@ -64,15 +72,13 @@
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            <input type="submit"
-                                   name="user_photos"
-                                   class="button is-success is-small"
-                                   value="Save Changes"/>
+                            {{ html()->submit('Save Changes')->class('button is-success is-small') }}
                         </div>
                     </div>
                 </div>
             </div>
-            {{ Form::close() }}
+
+            {{ html()->form()->close() }}
         </div>
     </article>
 @endsection

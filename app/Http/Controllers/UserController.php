@@ -314,35 +314,41 @@ class UserController extends Controller
      */
     public function user_photos(Request $request, User $user, $id)
     {
-        if (isset($request->user_photos)) {
-
+        if ($request->hasFile('avatar') || $request->hasFile('signature')) {
+            //dd($request->hasFile('avatar'));
+    
             $request->validate([
-                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg', //|max:2048,
-                'signature' => 'required|image|mimes:jpeg,png,jpg,gif,svg' //|max:2048,
+                'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg', // |max:2048
+                'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg' // |max:2048
             ]);
-            $avatar = time() . '.' . $request->avatar->extension();
-            $signature = time() . '.' . $request->signature->extension();
-
-            $avatar_data = $request->avatar->move(public_path('images/avatar'), $avatar);
-            $signature_data = $request->signature->move(public_path('images/signature'), $avatar);
-
-            $attributes = [
-                'avatar' => 'public/images/avatar/' . $avatar,
-                'signature' => 'public/images/signature/' . $signature
-            ];
-            //dd($attributes);
-            $userupdate = $this->user->update($id, $attributes);
-            $user = $this->user->getById($id);
-            if ($userupdate == true) {
-                return back()
-                    ->with('success', 'You have successfully upload image.')
-                    ->with('image', $avatar)
-                    ->with('signature', $signature);
+    
+            $attributes = [];
+    
+            // Process Avatar
+            if ($request->hasFile('avatar')) {
+                $avatar = time() . '_avatar.' . $request->file('avatar')->extension();
+                $request->file('avatar')->move(public_path('images/avatar'), $avatar);
+                $attributes['avatar'] = 'public/images/avatar/' . $avatar;
             }
-        } else {
-            $user = $this->user->getById($id);
-            return view('users.user_photos', ['user' => $user, 'id' => $id]);
-        }
+    
+            // Process Signature
+            if ($request->hasFile('signature')) {
+                $signature = time() . '_signature.' . $request->file('signature')->extension();
+                $request->file('signature')->move(public_path('images/signature'), $signature);
+                $attributes['signature'] = 'public/images/signature/' . $signature;
+            }
+    
+            // Update User Data
+            $userupdate = $this->user->update($id, $attributes);
+    
+            if ($userupdate) {
+                return back()->with('success', 'You have successfully uploaded the image(s).')->with('image', $attributes['avatar'] ?? null)->with('signature', $attributes['signature'] ?? null);
+            }
+        } 
+    
+        // Load the user photo upload page
+        $user = $this->user->getById($id);
+        return view('users.user_photos', ['user' => $user, 'id' => $id]);
     }
 
     /**
@@ -353,8 +359,8 @@ class UserController extends Controller
      */
     public function user_permissions(Request $request, User $user, $id)
     {
-        if (isset($request->user_permissions)) {
-            dd($request->permission);
+        if ($request->isMethod('patch')) {
+            //dd($request->permission);
 
             $batch_data = [];
             foreach ($request->permission as $key => $data) {
@@ -375,10 +381,10 @@ class UserController extends Controller
 
             $user = $this->user->getById($id);
             if ($user == true) {
-                return back()
-                    ->with('message', 'Successfully saved')
-                    ->with('user', $user)
-                    ->with('id', $id);
+                return back()->with('message', 'Successfully saved')
+                        ->with('user', $user)
+                        ->with('id', $id);
+
             }
         } else {
             $user = $this->user->getById($id);
@@ -394,24 +400,18 @@ class UserController extends Controller
      */
     public function financial_info(Request $request, User $user, $id)
     {
-        if (isset($request->financial_info)) {
-            //dd($request);
-            //dd($request->all());
+        if ($request->isMethod('patch')) {
+            //dd($request->all());  // Debugging the request data
             $arrMobileBanking = [];
-            if($request->mobile_bank_number) {
+            if ($request->mobile_bank_number) {
                 foreach ($request->mobile_bank_number as $key => $number) {
-                    //dump($mobileBank[$i]);
-                    //dump($number);
-
-                    $arrMobileBanking[] =
-                        $request->mobile_bank_method[$key] . ' : ' . $number;
+                    $arrMobileBanking[] = $request->mobile_bank_method[$key] . ' : ' . $number;
                 }
-
-
                 $packateMobileBanking = implode(' | ', $arrMobileBanking);
             } else {
                 $packateMobileBanking = '';
             }
+
             $attributes = [
                 'bank_information' => $request->bank_information,
                 'mbanking_information' => $packateMobileBanking,
@@ -420,16 +420,14 @@ class UserController extends Controller
             $userupdate = $this->user->update($id, $attributes);
             $user = $this->user->getById($id);
             if ($userupdate == true) {
-                return back()
-                    ->with(['status' => 1, 'message' => 'Information updated.'])
-                    ->with('user', $user)
-                    ->with('id', $id);
+                return back()->with(['status' => 1, 'message' => 'Information updated.'])->with('user', $user)->with('id', $id)->with('status', true);
             }
         } else {
             $user = $this->user->getById($id);
             return view('users.financial_info', ['user' => $user, 'id' => $id]);
         }
     }
+
 
     public function change_password(Request $request, $id)
     {

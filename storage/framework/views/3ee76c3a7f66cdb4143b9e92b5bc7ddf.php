@@ -50,7 +50,7 @@
 
 <style>
     .notification {
-        font-size: 18px;
+        font-size: 16px;
     }
 </style>
 <?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\resources\views/layouts/notification.blade.php ENDPATH**/ ?>

@@ -23,11 +23,12 @@
         @include('component.filter_set', [
             'spShowFilterSet' => true,
             'spPlaceholder' => 'Search user...',
-            'spMessage' => $message = $message ?? NULl,
-            'spStatus' => $status = $status ?? NULL
+            'spMessage' => $message ?? NULL,
+            'spStatus' => $status ?? NULL
         ])
     </nav>
 </section>
+
 @section('column_left')
     <article class="panel is-primary">
         <p class="panel-tabs">
@@ -39,114 +40,76 @@
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('users.basic_info', $id), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ html()->form('PUT', route('users.basic_info', $id))
+                ->attribute('id', 'add_user')
+                ->attribute('files', true)
+                ->attribute('autocomplete', 'off')
+                ->open() 
+            }}
+
             <div class="columns">
                 <div class="column is-6">
-                    <div class="field">
-                        {{ Form::label('name', 'Name', array('class' => 'label')) }}
-                        <div class="control">
-                            {{ Form::text('name', $user->name, ['required', 'class' => 'input', 'placeholder' => 'Enter name...']) }}
-                        </div>
-                    </div>
+                    {{ html()->label('Name', 'name')->class('label') }}
+                    {{ html()->text('name', $user->name)->required()->class('input')->placeholder('Enter name...') }}
                 </div>
                 <div class="column is-6">
-                    <div class="field">
-                        {{ Form::label('employee_no', 'Employee no', array('class' => 'label')) }}
-                        <div class="control">
-                            {{ Form::number('employee_no', $user->employee_no, ['class' => 'input', 'required' => true, 'placeholder' => 'Enter employee no...']) }}
-                        </div>
-                    </div>
+                    {{ html()->label('Employee no', 'employee_no')->class('label') }}
+                    {{ html()->number('employee_no', $user->employee_no)->class('input')->required()->placeholder('Enter employee no...') }}
                 </div>
             </div>
+
             <div class="columns">
                 <div class="column is-6">
-                    <div class="field">
-                        {{ Form::label('phone', 'Mobile', array('class' => 'label')) }}
-                        <div class="control">
-                            {{ Form::number('phone', $user->phone, ['required', 'class' => 'input', 'placeholder' => 'Enter phone no...', 'maxlength' => 11, 'minlength' => 11]) }}
-                        </div>
-                    </div>
+                    {{ html()->label('Mobile', 'phone')->class('label') }}
+                    {{ html()->number('phone', $user->phone)->required()->class('input')->placeholder('Enter phone no...')->maxlength(11)->minlength(11) }}
                 </div>
                 <div class="column is-6">
-                    <div class="field">
-                        {{ Form::label('emergency_phone', 'Emergency mobile', array('class' => 'label')) }}
-                        <div class="control">
-                            {{ Form::number('emergency_phone', $user->emergency_phone, ['class' => 'input', 'required' => true, 'placeholder' => 'Enter phone no...', 'maxlength' => 11, 'minlength' => 11]) }}
-                        </div>
-                    </div>
+                    {{ html()->label('Emergency mobile', 'emergency_phone')->class('label') }}
+                    {{ html()->number('emergency_phone', $user->emergency_phone)->class('input')->required()->placeholder('Enter phone no...')->maxlength(11)->minlength(11) }}
                 </div>
             </div>
 
             <div class="columns">
                 <div class="column is-4">
-                    <div class="field">
-                        {{ Form::label('email', 'Email', array('class' => 'label')) }}
-                        <div class="control">
-                            {{ Form::text('email', $user->email, ['class' => 'input', 'type' => 'email', 'placeholder' => 'Enter email...']) }}
-                        </div>
-                    </div>
+                    {{ html()->label('Email', 'email')->class('label') }}
+                    {{ html()->email('email', $user->email)->class('input')->placeholder('Enter email...') }}
                 </div>
                 <div class="column is-2">
-                    <div class="field">
-                        {{Form::label('department','Department',['class' => 'label'])}}
-                        <div class="control">
-                            <div class="select is-fullwidth">
-                                <?php
-                                //$designations = \App\Models\Designation::pluck('name', 'id');
-                                $departments = [
-                                    '' => 'Select a department',
-                                    'Accounts & Finance' => 'Accounts & Finance',
-                                    'Administration'  => 'Administration',
-                                    'Maintenance' => 'Maintenance',
-                                    'Management' => 'Management',
-                                    'E-Commerce' => 'E-Commerce',
-                                    'Tourism'   => 'Tourism',
-                                    'Technical' => 'Technical',
-                                    'HR' => 'HR',
-                                    'Office Staff' => 'Office Staff',
-                                ];
-                                ?>
-                                {{ Form::select('department', $departments ?? NULL, $user->department, ['class' => 'input is-small']) }}
-                            </div>
-                        </div>
-                    </div>
+                    {{ html()->label('Department', 'department')->class('label') }}
+                    {{ html()->select('department', [
+                        '' => 'Select a department',
+                        'Accounts & Finance' => 'Accounts & Finance',
+                        'Administration' => 'Administration',
+                        'Maintenance' => 'Maintenance',
+                        'Management' => 'Management',
+                        'E-Commerce' => 'E-Commerce',
+                        'Tourism' => 'Tourism',
+                        'Technical' => 'Technical',
+                        'HR' => 'HR',
+                        'Office Staff' => 'Office Staff',
+                    ], $user->department)->class('input is-small') }}
                 </div>
                 <div class="column is-3">
-                    <div class="field">
-                        {{Form::label('designation','Designation',['class' => 'label'])}}
-                        <div class="control">
-                            <div class="select is-fullwidth">
-                                <?php $designations = \App\Models\Designation::pluck('name', 'id'); ?>
-                                {{ Form::select('designation', $designations ?? NULL, $user->designation, ['class' => 'input is-small']) }}
-                            </div>
-                        </div>
-                    </div>
+                    {{ html()->label('Designation', 'designation')->class('label') }}
+                    {{ html()->select('designation', \App\Models\Designation::pluck('name', 'id'), $user->designation)->class('input is-small') }}
                 </div>
                 <div class="column is-3">
-                    <div class="field">
-                        {{Form::label('role','User Group',['class' => 'label'])}}
-                        <div class="control">
-                            <div class="select is-fullwidth">
-                                <?php $roles = \App\Models\Role::pluck('name', 'id'); ?>
-                                {{ Form::select('role', $roles ?? NULL, $user->role, ['class' => 'input is-small']) }}
-                            </div>
-                        </div>
-                    </div>
+                    {{ html()->label('User Group', 'role')->class('label') }}
+                    {{ html()->select('role', \App\Models\Role::pluck('name', 'id'), $user->role)->class('input is-small') }}
                 </div>
             </div>
+
             <div class="columns">
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            <input type="submit"
-                                   name="basic_info"
-                                   class="button is-success is-small"
-                                   value="Save Changes"/>
+                            <input type="submit" name="basic_info" class="button is-success is-small" value="Save Changes"/>
                         </div>
                     </div>
                 </div>
             </div>
-            {{ Form::close() }}
+
+            {{ html()->form()->close() }}
         </div>
     </article>
 @endsection
