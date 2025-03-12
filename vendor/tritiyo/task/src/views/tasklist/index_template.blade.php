@@ -299,26 +299,26 @@
         }
     </style>
     <script>
-        $('a#trb').click(function(){
-            //e.preventDefault();
-            let taskID = $(this).attr('value');
-            $.ajax({
-                method: 'GET',
-                url:    '{{route('total.requisition.bill.index', '')}}/'+taskID,
-                success: function (data){
-                    $('.onMouseHover'+taskID).empty().append(data).slideUp();
-                }
-            })
-        })
-    </script>
-
-    <script>
-        $('i').mouseover(function(){
-            $(this).addClass('fa-pulse')
-        })
-        $('i').mouseout(function(){
-            $(this).removeClass('fa-pulse')
-        })
+        jQuery(document).ready(function($) {
+            $.noConflict();
+            $('a#trb').click(function(){
+                //e.preventDefault();
+                let taskID = $(this).attr('value');
+                $.ajax({
+                    method: 'GET',
+                    url:    '{{route('total.requisition.bill.index', '')}}/'+taskID,
+                    success: function (data){
+                        $('.onMouseHover'+taskID).empty().append(data).slideUp();
+                    }
+                })
+            });
+            $('i').mouseover(function(){
+                $(this).addClass('fa-pulse')
+            });
+            $('i').mouseout(function(){
+                $(this).removeClass('fa-pulse')
+            });
+        });
     </script>
 @endsection
 

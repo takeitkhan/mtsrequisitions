@@ -280,10 +280,6 @@ function userAccess($arg)
                 @foreach($tasks as $task)
                     @include('task::tasklist.index_template')
                 @endforeach
-
-
-                {{--   End         --}}
-
             @elseif(auth()->user()->isAdmin(auth()->user()->id))
                 @php $tasks = \Tritiyo\Task\Models\Task::orderBy('id', 'desc')->paginate('48') @endphp
                 @foreach($tasks as $task)

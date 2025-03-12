@@ -60,7 +60,7 @@
                                     ->where('tasks_requisition_bill.bill_approved_by_CFO', Null)
                                     ->orderBy('tasks.id', 'desc')
                                     ->count();
-            } elseif(auth()->user()->isAccountant(auth()->user()->id)){
+            } elseif(auth()->user()->isAccountant(auth()->user()->id)) {
             	$billPendingTask = Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
                                    ->where('tasks_requisition_bill.requisition_approved_by_accountant', 'Yes')
                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', 'Yes')
@@ -69,8 +69,7 @@
                                    ->where('tasks_requisition_bill.bill_approved_by_accountant', Null)
                                    ->orderBy('tasks.id', 'desc')
                                    ->count();
-            } 
-     		 elseif(auth()->user()->isResource(auth()->user()->id)){
+            } elseif(auth()->user()->isResource(auth()->user()->id)) {
             	$billPendingTask = Tritiyo\Task\Models\TaskRequisitionBill::leftJoin('tasks', 'tasks.id', '=', 'tasks_requisition_bill.task_id')
           							->where('tasks.task_assigned_to_head', 'Yes')
           							->where('tasks.site_head', auth()->user()->id)
@@ -78,24 +77,19 @@
                                    ->where('tasks_requisition_bill.bill_submitted_by_resource', NULL)
                                    ->orderBy('tasks.id', 'desc')
                                    ->count();
-            } 
-      		else{
+            } else {
             	$billPendingTask = '';
             }
-      		//echo $billPendingTask;
-      			
-     		 ?>
+            ?>
 	@if($billPendingTask > 50 && auth()->user()->isManager(auth()->user()->id))
-  <span class="tag is-small is-tag is-danger  is-rounded" style="font-weight: 600;">You can not create any task, cause you have {{$billPendingTask}} pending bills to clear. please clear your pending bills. </span>
-      <a class="tag is-small is-tag is-warning is-dark is-rounded" href="{{route('tasks.index')}}?bill=pending">Click to view Pending Bills</a>
+        <span class="tag is-small is-tag is-danger  is-rounded" style="font-weight: 600;">You can not create any task, cause you have {{$billPendingTask}} pending bills to clear. please clear your pending bills. </span>
+        <a class="tag is-small is-tag is-warning is-dark is-rounded" href="{{route('tasks.index')}}?bill=pending">Click to view Pending Bills</a>
 	@else
-      <?php
-          //echo date('hia');
-          $taskCreationEndTime = \App\Models\Setting::timeSettings('task_creation_end');
-          //echo $taskCreationEndTime;
+      <?php          
+          $taskCreationEndTime = \App\Models\Setting::timeSettings('task_creation_end');          
           if(!empty($taskCreationEndTime) && date('Hi') > $taskCreationEndTime){
               echo '<div class="notification is-danger py-1">Task Creation Time is Over. You can not create task after '.numberToTimeFormat($taskCreationEndTime).' </div>';
-          }else{
+          } else {
 
      ?>
     <article class="panel is-primary">
@@ -112,13 +106,15 @@
 
 
         <div class="customContainer">
-            <?php  if (!empty($task) && $task->id) {
+            <?php
+            if (!empty($task) && $task->id) {
                 $routeUrl = route('tasks.update', $task->id);
                 $method = 'PUT';
             } else {
                 $routeUrl = route('tasks.store');
                 $method = 'post';
-            } ?>
+            }
+            ?>
 
             {!! Html::form()
                 ->attribute('action', $routeUrl)
@@ -138,7 +134,7 @@
             <div class="columns">
                 <div class="column is-4 p-2">
                     <div class="field">
-                        {{ Html::label('project_id', 'Project', array('class' => 'label', 'style' => 'display: inline-block')) }}
+                        {{ Html::label('Project', 'project_id', array('class' => 'label', 'style' => 'display: inline-block')) }}
 
 
                         <div class="scontrol">
@@ -181,7 +177,7 @@
                 </div>
                 <div class="column is-3 p-2">
                     <div class="field">
-                        {{ Html::label('site_head', 'Site Head', array('class' => 'label')) }}
+                        {{ Html::label('Site Head', 'site_head', array('class' => 'label')) }}
                         <div class="control">
                             <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
                             <?php
@@ -228,7 +224,7 @@
 
                 <div class="column is-3 p-2">
                     <div class="field">
-                        {{ Html::label('task_name', 'Task Name', array('class' => 'label')) }}
+                        {{ Html::label( 'Task Name', 'task_name',array('class' => 'label')) }}
                         <div class="control">
                             {{ Html::input('text', 'task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'required' => true, 'placeholder' => 'Enter Task Name...']) }}
                         </div>
@@ -246,7 +242,7 @@
 
                 <div class="column is-9">
                     <div class="field">
-                        {{ Html::label('task_details', 'Task Details [Please put all the activity details here]', array('class' => 'label')) }}
+                        {{ Html::label('Task Details [Please put all the activity details here]', 'task_details', array('class' => 'label')) }}
                         <div class="control">
                             {{ Html::input('textarea', 'task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'required' => true,  'rows' => 5, 'placeholder' => 'Enter task details...']) }}
                         </div>

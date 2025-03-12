@@ -23,12 +23,11 @@
         @include('component.filter_set', [
             'spShowFilterSet' => false,
             'spPlaceholder' => 'Search setting...',
-            'spMessage' => $message = $message ?? NULl,
-            'spStatus' => $status = $status ?? NULL
+            'spMessage' => $message ?? NULL,
+            'spStatus' => $status ?? NULL
         ])
     </nav>
 </section>
-
 
 @section('column_left')
     <article class="panel is-primary">
@@ -45,19 +44,29 @@
             <a href="{{ route('settings.email', 4) }}" class="is-active">
                 <i class="fas fa-envelope"></i>&nbsp; Email Settings
             </a>
-          	 <a href="{{ route('settings.other', 5) }}" class="">
+            <a href="{{ route('settings.other', 5) }}">
                 <i class="fas fa-cog"></i>&nbsp; Other Settings
             </a>
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('settings.email', 4), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
+            {!! html()->form('POST', route('settings.email', 4))
+                ->id('add_user')
+                ->autocomplete('off')
+                ->open() 
+            !!}
+
+            
             <div class="columns">
                 <div class="column is-12">
                     <div class="field">
-                        {{ Form::label('name', 'Settings Name', array('class' => 'label')) }}
+                        {!! html()->label('Settings Name', 'name')->class('label') !!}
                         <div class="control">
-                            {{ Form::text('name', $setting->name ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter setting name...']) }}
+                            {!! html()->text('name', $setting->name ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Enter setting name...')
+                            !!}
                         </div>
                     </div>
                 </div>
@@ -72,9 +81,16 @@
             <div class="columns">
                 <div class="column is-12">
                     <div class="field">
-                        {{ Form::label('email_address', 'Email Address', array('class' => 'label')) }}
+                        {!! html()->label('Email Address', 'email_address')->class('label') !!}
                         <div class="control">
-                            {{ Form::textarea('email_address', $fields->email_address ?? NULL, ['required', 'class' => 'input', 'rows' => 2, 'cols' => 40, 'placeholder' => 'Enter Email Address With | Seperator...', 'style' => 'height: auto !important']) }}
+                            {!! html()->textarea('email_address', $fields->email_address ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->rows(2)
+                                ->cols(40)
+                                ->placeholder('Enter Email Address With | Seperator...')
+                                ->attribute('style', 'height: auto !important')
+                            !!}
                         </div>
                         <small class="lead">Example of Format: mail1 | mail2</small>
                     </div>
@@ -85,13 +101,13 @@
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            <button class="button is-success is-small">Save Changes</button>
+                            {!! html()->button('Save Changes')->class('button is-success is-small')->type('submit') !!}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{ Form::close() }}
+            {!! html()->form()->close() !!}
         </div>
     </article>
 @endsection

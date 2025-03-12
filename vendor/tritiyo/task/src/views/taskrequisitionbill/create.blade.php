@@ -139,7 +139,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column is-2">
                             <div class="field">
-                                {{ Html::label('project_id', 'Project', array('class' => 'label')) }}
+                                {{ Html::label('Project',  'project_id', array('class' => 'label')) }}
                                 <div class="control">
 
 
@@ -151,7 +151,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('project_manager', 'Project Manager', array('class' => 'label')) }}
+                                {{ Html::label('Project Manager', 'project_manager', array('class' => 'label')) }}
                                 <div class="control">
                                     <?php $projectManager = \App\Models\User::where('id', $task->user_id)->first();?>
                                     <input type="hidden" name="project_manager_id" class="input is-small"
@@ -163,7 +163,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('site_name', 'Site Code', array('class' => 'label')) }}
+                                {{ Html::label('Site Code', 'site_name', array('class' => 'label')) }}
                                 <div class="control">
                                     <?php
                                     	$taskSite = Tritiyo\Task\Models\TaskSite::where('task_id', $task->id)->first();
@@ -181,7 +181,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('task_for', 'Task Created For', array('class' => 'label')) }}
+                                {{ Html::label('Task Created For', 'task_for', array('class' => 'label')) }}
                                 <div class="control">
                                     {{ Html::input('text', 'task_for', $task->task_for, ['required', 'class' => 'input is-small', 'readonly' => true]) }}
                                 </div>
@@ -203,7 +203,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 <div class="columns">
                                     <div class="column is-3">
                                         <div class="field">
-                                            {{ Html::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
+                                            {{ Html::label('Vehicle', 'vehicle_id', array('class' => 'label')) }}
                                             <div class="control">
                                                 <?php $vehicleName = \Tritiyo\Vehicle\Models\Vehicle::where('id', $veh->vehicle_id)->first()->name;?>
                                                 <input type="hidden" name="vehicle_id" class="input is-small"
@@ -216,11 +216,11 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                     </div>
 
                                     <div class="column is-3">
-                                        {{ Html::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
+                                        {{ Html::label('Vehicle Rent', 'vehicle_rent', array('class' => 'label')) }}
                                         {{ Html::input('text', 'vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small', 'readonly' => true)) }}
                                     </div>
                                     <div class="column is-6">
-                                        {{ Html::label('vehicle_note', 'Note', array('class' => 'label')) }}
+                                        {{ Html::label('Note', 'vehicle_note', array('class' => 'label')) }}
                                         {{ Html::input('text', 'vehicle_note[]', $veh->vehicle_note, array('class' => 'input is-small', 'readonly' => true)) }}
                                     </div>
                                 </div>
@@ -242,7 +242,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                 <div class="columns">
                                     <div class="column is-3">
                                         <div class="field">
-                                            {{ Html::label('material_id', 'Material', array('class' => 'label')) }}
+                                            {{ Html::label('Material', 'material_id', array('class' => 'label')) }}
                                             <div class="control">
                                                 <?php $materialName = \Tritiyo\Material\Models\Material::where('id', $mat->material_id)->first()->name;?>
                                                 <input type="hidden" name="material_id" class="input is-small"
@@ -255,16 +255,16 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                     </div>
 
                                     <div class="column is-2">
-                                        {{ Html::label('material_qty', 'Material Qty', array('class' => 'label')) }}
+                                        {{ Html::label('Material Qty', 'material_qty', array('class' => 'label')) }}
                                         {{ Html::input('text', 'material_qty[]', $mat->material_qty, array('class' => 'input is-small', 'readonly' => true)) }}
                                     </div>
 
                                     <div class="column is-2">
-                                        {{ Html::label('material_amount', 'Amount', array('class' => 'label')) }}
+                                        {{ Html::label('Amount', 'material_amount', array('class' => 'label')) }}
                                         {{ Html::input('text', 'material_amount[]', $mat->material_amount, array('class' => 'input is-small', 'readonly' => true)) }}
                                     </div>
                                     <div class="column is-5">
-                                        {{ Html::label('material_note', 'Note', array('class' => 'label')) }}
+                                        {{ Html::label('Note', 'material_note', array('class' => 'label')) }}
                                         {{ Html::input('text', 'material_note[]', $mat->material_note, array('class' => 'input is-small', 'readonly' => true)) }}
                                     </div>
                                 </div>
@@ -278,17 +278,23 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('da_amount', 'DA Amount', array('class' => 'label')) }}
+                                {{ Html::label('DA Amount', 'da_amount', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Html::input('number', 'da_amount', !empty($da) ? $da->da_amount : '', ['class' => 'input is-small requisition_rent_id',  'placeholder' => 'Enter DA amount...', 'min' => '0']) }}
+                                    {!! html()->input('number', 'da_amount', !empty($da) ? $da->da_amount : '')
+                                        ->class('input is-small requisition_rent_id')
+                                        ->placeholder('Enter DA amount...') !!}
+
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('da_notes', 'DA Note', array('class' => 'label')) }}
+                                {{ Html::label('DA Note', 'da_notes', array('class' => 'label')) }}
                                 <div class="control">
-                                    {{ Html::input('text', 'da_notes', !empty($da) ? $da->da_notes : '', ['class' => 'input is-small' , 'placeholder' => 'Enter DA notes...']) }}
+                                    {!! html()->input('text', 'da_notes', !empty($da) ? $da->da_notes : '')
+                                        ->class('input is-small')
+                                        ->placeholder('Enter DA notes...') !!}
+
                                 </div>
                             </div>
                         </div>
@@ -296,40 +302,57 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('labour_amount', 'Labour Amount', array('class' => 'label')) }}
+                                {!! html()->label('Labour Amount', 'labour_amount')
+                                    ->class('label') !!}
                                 <div class="control">
-                                    {{ Html::input('number', 'labour_amount', !empty($labour) ? $labour->labour_amount : '', ['required', 'class' => 'input is-small requisition_rent_id', 'placeholder' => 'Enter labour amount...', 'v-model' => 'labour_amount']) }}
+                                    {!! html()->input('number', 'labour_amount', !empty($labour) ? $labour->labour_amount : '')
+                                        ->required()
+                                        ->class('input is-small requisition_rent_id')
+                                        ->placeholder('Enter labour amount...')
+                                        ->attribute('v-model', 'labour_amount') !!}
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('labour_notes', 'Labour Note', array('class' => 'label')) }}
+                                {!! html()->label('Labour Note', 'labour_notes')
+                                    ->class('label') !!}
                                 <div class="control">
-                                    {{ Html::input('text', 'labour_notes', !empty($labour) ? $labour->labour_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter DA notes...']) }}
+                                    {!! html()->input('text', 'labour_notes', !empty($labour) ? $labour->labour_notes : '')
+                                        ->required()
+                                        ->class('input is-small')
+                                        ->placeholder('Enter DA notes...') !!}
                                 </div>
                             </div>
-                        </div>
-
+                        </div>                        
                     </div>
 
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('other_amount', 'Other Amount', array('class' => 'label')) }}
+                                {!! html()->label('Other Amount', 'other_amount')
+                                    ->class('label') !!}
                                 <div class="control">
-                                    {{ Html::input('number', 'other_amount', !empty($other) ? $other->other_amount : '', ['required', 'class' => 'input is-small requisition_rent_id', 'placeholder' => 'Enter other amount...', 'v-model' => 'other_amount']) }}
+                                    {!! html()->input('number', 'other_amount', !empty($other) ? $other->other_amount : '')
+                                        ->required()
+                                        ->class('input is-small requisition_rent_id')
+                                        ->placeholder('Enter other amount...')
+                                        ->attribute('v-model', 'other_amount') !!}
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('other_notes', 'Other Note', array('class' => 'label')) }}
+                                {!! html()->label('Other Note', 'other_notes')
+                                    ->class('label') !!}
                                 <div class="control">
-                                    {{ Html::input('text', 'other_notes', !empty($other) ? $other->other_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other notes...']) }}
+                                    {!! html()->input('text', 'other_notes', !empty($other) ? $other->other_notes : '')
+                                        ->required()
+                                        ->class('input is-small')
+                                        ->placeholder('Enter other notes...') !!}
                                 </div>
                             </div>
-                        </div>
+                        </div>                        
                     </div>
                     <br/>
                     <!-- Transport  -->
@@ -492,7 +515,6 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             </div>
                         @endif
                     </div>
-                    <!-- End Purchase -->
                 </div>
             </div>
             <div class="columns">
@@ -589,7 +611,8 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
     <script>
         //Add Row Function
-        $(document).ready(function () {
+        jQuery(document).ready(function ($) {
+            $.noConflict();
             var ta_counter = '{{$ta_count +1}}';
             var pa_counter = '{{$pa_count + 1}}';
             //Transport
@@ -629,15 +652,9 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                 $(this).closest("div.columns").remove();
                 counter -= 1
             });
-        });
+        
 
-    </script>
-
-
-
-<script>
-
-  	$(document).on("change", "input", function() {
+  	        $(document).on("change", "input", function() {
                 var of95 = parseInt($('#of95').val());
 
                 var sum = 0;
@@ -650,17 +667,14 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                var live_usages_total = summation;
       			//console.log(canNotCross95);
                if(live_usages_total > of95 ) {
-                           $('#save_changes').hide();
-                           alert('Your entered amount exceeding 100% of your current budget. Please enter lower amount to proceed.');
+                $('#save_changes').hide();
+                alert('Your entered amount exceeding 100% of your current budget. Please enter lower amount to proceed.');
                } else {
-                           $('#save_changes').show();
+                $('#save_changes').show();
                }
             });
-
+        });
 
 </script>
-
-
-
 @endsection
 

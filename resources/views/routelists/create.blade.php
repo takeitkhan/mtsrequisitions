@@ -39,8 +39,10 @@
                     <div class="field">
                         {!! html()->label('Software Role', 'to_role')->class('label') !!}
                         <div class="control">
-                            {!! html()->select('to_role[]', \App\Models\Role::pluck('name', 'id')->prepend('Select Role', ''), null)->class('input')->multiple() !!}
-                            <small>Use CTRL + Click to select multiple roles</small>
+                            {!! html()->select('to_role[]', \App\Models\Role::pluck('name', 'id')->prepend('Select Role', ''), null)
+                                ->class('select is-multiple')
+                                ->multiple() !!}
+                            <small>Use CTRL + Click to select multiple roles</small>                           
                         </div>
                     </div>
                     <div class="field">

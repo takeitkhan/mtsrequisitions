@@ -53,22 +53,25 @@
 
                 <div class="column is-3">
                     <div class="field">
-                        {{ Html::label('project_id', 'Project', array('class' => 'label', 'style' => 'display: inline-block')) }}
+                        {{ Html::label('Project', 'project_id', array('class' => 'label', 'style' => 'display: inline-block')) }}
 
                         <div class="control">
                             @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isHR(auth()->user()->id))
                                 <?php $projects = \Tritiyo\Project\Models\Project::where('manager', auth()->user()->id)->pluck('name', 'id')->prepend('Select Project', ''); ?>
                             @else
                                 <?php $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
-                            @endif
-                            <?php //$projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
-                            {{ Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'id' => 'project_select']) }}
+                            @endif                            
+                            {!! Html::select('project_id', $projects, $task->project_id ?? NULL)
+                                    ->attribute('class', 'input')
+                                    ->attribute('id', 'project_select')
+                                !!}
+
                         </div>
                     </div>
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        {{ Html::label('site_head', 'Site Head', array('class' => 'label')) }}
+                        {{ Html::label('Site Head', 'site_head', array('class' => 'label')) }}
                         <div class="control">
                             <?php
                             /**
@@ -113,19 +116,15 @@
                                         {{ $resource->name ?? NULL }}
                                     </option>
                                 @endforeach
-                            </select>
-
-
-                            <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
-                            {{--                            {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}--}}
+                            </select>                            
                         </div>
                     </div>
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        {{ Html::label('task_name', 'Task Name', array('class' => 'label')) }}
+                        {{ Html::label('Task Name', 'task_name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Html::input('text','task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...']) }}
+                            {{ Html::input('text', 'task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...']) }}
                         </div>
                     </div>
                 </div>
@@ -140,7 +139,7 @@
             <div class="columns">
                 <div class="column is-9">
                     <div class="field">
-                        {{ Html::label('task_details', 'Task Details', array('class' => 'label')) }}
+                        {{ Html::label('Task Details', 'task_details', array('class' => 'label')) }}
                         <div class="control">
                             {{ Html::input('textarea','task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'rows' => 5, 'placeholder' => 'Enter task details...']) }}
                         </div>

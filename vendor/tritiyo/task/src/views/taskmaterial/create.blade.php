@@ -178,11 +178,11 @@
 
 
 
-@section('cusjs')
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+@section('cusjs')    
     <script>
         //Add Row Function
-        $(document).ready(function () {
+        jQuery(document).ready(function ($) {
+            $.noConflict();
             var counter = 1;
 
             $("#addrow").on("click", function () {
@@ -194,7 +194,7 @@
                 cols += '<?php foreach($materials as $material){?>';
                 cols += '<option value="<?php echo $material->id;?>"><?php echo $material->name;?></option>';
                 cols += '<?php } ?>';
-                cols += '<select>';
+                cols += '</select>';
                 cols += '</div>';
                 cols += '<div class="column is-2">';
                 cols += '<label for="material_qty" class="label">Material Qty</label>';
@@ -247,10 +247,7 @@
                 counter -= 1
             });
         });
-
     </script>
-
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>--}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
@@ -258,7 +255,7 @@
 
         //Select 2
         function materialSelectRefresh() {
-            $('select#material_select').select2({
+            jQuery('select#material_select').select2({
                 placeholder: "Select Material",
                 allowClear: true
             });

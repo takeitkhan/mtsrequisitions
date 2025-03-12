@@ -41,13 +41,18 @@
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('settings.global', 1), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
+            {!! html()->form('POST', route('settings.global', 1))
+                ->attribute('id', 'add_user')
+                ->attribute('files', true)
+                ->attribute('autocomplete', 'off')
+                ->open() !!}
+
             <div class="columns">
                 <div class="column is-12">
                     <div class="field">
-                        {{ Form::label('name', 'Settings Name', array('class' => 'label')) }}
+                        {{ html()->label('Settings Name', 'name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('name', $setting->name ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter setting name...']) }}
+                            {{ html()->input('text', 'name', $setting->name ?? NULL)->class('input')->placeholder('Enter setting name...')->required() }}
                         </div>
                     </div>
                 </div>
@@ -62,25 +67,32 @@
             <div class="columns">
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('company_name', 'Company Name', array('class' => 'label')) }}
+                        {{ html()->label('Company Name', 'company_name', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('company_name', $fields->company_name ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter company name...']) }}
+                            {{ html()->input('text', 'company_name', $fields->company_name ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter company name...')
+                                ->required() }}
                         </div>
                     </div>
                 </div>
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('company_slogan', 'Company Slogan', array('class' => 'label')) }}
+                        {{ html()->label('Company Slogan', 'company_slogan', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('company_slogan', $fields->company_slogan ?? NULL, ['class' => 'input', 'placeholder' => 'Enter company slogan...']) }}
+                            {{ html()->input('text', 'company_slogan', $fields->company_slogan ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter company slogan...') }}
                         </div>
                     </div>
                 </div>
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('address', 'Company Address', array('class' => 'label')) }}
+                        {{ html()->label('Company Address', 'address', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('address', $fields->address ?? NULL, ['class' => 'input', 'placeholder' => 'Enter address...']) }}
+                            {{ html()->input('text', 'address', $fields->address ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter address...') }}
                         </div>
                     </div>
                 </div>
@@ -88,25 +100,31 @@
             <div class="columns">
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('company_phone', 'Company Phone', array('class' => 'label')) }}
+                        {{ html()->label('Company Phone', 'company_phone', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('company_phone', $fields->company_phone ?? NULL, ['class' => 'input', 'placeholder' => 'Enter phone...']) }}
+                            {{ html()->input('text', 'company_phone', $fields->company_phone ?? NULL)->class('input')->placeholder('Enter phone...') }}
                         </div>
                     </div>
                 </div>
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('company_email', 'Company Email', array('class' => 'label')) }}
+                        {{ html()->label('Company Email', 'company_email', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('company_email', $fields->company_email ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter company email...']) }}
+                            {{ html()->input('text', 'company_email', $fields->company_email ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter company email...')
+                                ->required() }}
+
                         </div>
                     </div>
                 </div>
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('company_website', 'Company Website', array('class' => 'label')) }}
+                        {{ html()->label('Company Website', 'company_website', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('company_website', $fields->company_website ?? NULL, ['class' => 'input', 'placeholder' => 'Enter company website...']) }}
+                            {{ html()->input('text', 'company_website', $fields->company_website ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter company website...') }}
                         </div>
                     </div>
                 </div>
@@ -121,7 +139,7 @@
                 </div>
             </div>
 
-            {{ Form::close() }}
+            {!! html()->form()->close() !!}
         </div>
     </article>
 @endsection

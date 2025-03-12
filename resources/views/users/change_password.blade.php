@@ -31,14 +31,22 @@
 @section('column_left')
     <article class="panel is-primary">
         <div class="customContainer">
-            {{ Form::open(array('url' => route('user-password.update'), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ html()->form('PUT', route('user-password.update'))
+                ->attribute('id', 'add_user')
+                ->attribute('files', true)
+                ->attribute('autocomplete', 'off')
+                ->open() 
+            }}
             <div class="columns">
                 <div class="column is-6">
                     <div class="field">
-                        {{ Form::label('password', 'Password', array('class' => 'label')) }}
+                        {{ html()->label('Password', 'password')->class('label') }}
                         <div class="control">
-                            <input name="password" type="password" class="input" placeholder="Enter password..."
-                                   required/>
+                            {{ html()->password('password')
+                                ->class('input')
+                                ->placeholder('Enter password...')
+                                ->required() 
+                            }}
                         </div>
                     </div>
                 </div>
@@ -46,10 +54,13 @@
             <div class="columns">
                 <div class="column is-6">
                     <div class="field">
-                        {{ Form::label('confirm_password', 'Confirm Password', array('class' => 'label')) }}
+                        {{ html()->label('Confirm Password', 'confirm_password')->class('label') }}
                         <div class="control">
-                            <input name="confirm_password" type="password" class="input"
-                                   placeholder="Enter confirm password..." required/>
+                            {{ html()->password('confirm_password')
+                                ->class('input')
+                                ->placeholder('Enter confirm password...')
+                                ->required()
+                            }}
                         </div>
                     </div>
                 </div>
@@ -58,15 +69,14 @@
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            <input type="submit"
-                                   name="basic_info"
-                                   class="button is-success is-small"
-                                   value="Change"/>
+                            {{ html()->submit('Change')
+                                ->class('button is-success is-small')
+                            }}
                         </div>
                     </div>
                 </div>
             </div>
-            {{ Form::close() }}
+            {!! html()->form()->close() !!}
         </div>
     </article>
 @endsection

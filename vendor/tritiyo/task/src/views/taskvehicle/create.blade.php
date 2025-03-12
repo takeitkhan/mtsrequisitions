@@ -165,7 +165,8 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
         //Add Row Function
-        $(document).ready(function() {
+        jQuery(document).ready(function($) {
+            $.noConflict();
             var counter = 1;
 
             $("#addrow").on("click", function() {
@@ -177,7 +178,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                 cols += '<?php foreach($vehicles as $vehicle){?>';
                 cols += '<option value="<?php echo $vehicle->id; ?>"><?php echo $vehicle->name; ?></option>';
                 cols += '<?php } ?>';
-                cols += '<select>';
+                cols += '</select>';
                 cols += '</div>';
                 cols += '<div class="column is-2">';
                 cols += '<label for="vehicle_rent" class="label">Vehicle Rent</label>';
@@ -236,7 +237,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
     <script>
         //Select 2
         function vehicleSelectRefresh() {
-            $('select#vehicle_select').select2({
+            jQuery('select#vehicle_select').select2({
                 placeholder: "Select vehicle",
                 allowClear: true,
             });

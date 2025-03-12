@@ -53,8 +53,8 @@ $inserted = \App\Models\Attack::insertOrUpdate($match, $arr);
 <body>
 
     <?php /*<div class="pageload1"></div>
-       <div class="pageload2"><img src="{{asset('public/images/preloader.gif')}}"></div>
-       */ ?>
+      <div class="pageload2"><img src="{{asset('public/images/preloader.gif')}}"></div>
+      */ ?>
 
     <div class="tap1"></div>
     <div class="tap2"><img src="<?php echo e(asset('public/images/preloader.gif')); ?>"></div>
@@ -163,14 +163,35 @@ $inserted = \App\Models\Attack::insertOrUpdate($match, $arr);
         a.onhover:hover {
             color: #F1F1F1;
         }
+
+        .select2-container .select2-selection--single {
+            height: 38px;
+            border-radius: 4px;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            padding: 6px 12px;
+        }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <?php echo $__env->yieldContent('cusjs'); ?>
     <?php echo $__env->yieldContent('cus_js'); ?>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
     <script>
-        $.fn.select2.defaults.set("theme", "bootstrap");
+        jQuery(document).ready(function ($) {
+            $.noConflict();
+            // Ensure Select2 is initialized after jQuery
+            $.fn.select2.defaults.set("theme", "bootstrap");
+
+            // Initialize Select2
+            $('#project_select').select2();
+        });
     </script>
     <link rel="stylesheet" type="text/css" href="<?php echo e(asset('public/css/form.css') . '?' . rand(0, 999)); ?>" />
 </body>

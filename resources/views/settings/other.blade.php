@@ -51,8 +51,11 @@
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('settings.other', 5), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
-   
+            {!! html()->form('POST', route('settings.other', 5))
+                ->attribute('id', 'add_user')
+                ->attribute('files', true)
+                ->attribute('autocomplete', 'off')
+                ->open() !!}
 
             <?php
             if (!empty($setting)) {
@@ -62,19 +65,25 @@
 
             <div class="columns">
                 <div class="column is-12">
-                    <div class="field">
-                        {{ Form::label('email_address', 'Percentage of project lock', array('class' => 'label')) }}
+                    <div class="field">                        
+                        {{ html()->label('Percentage of project lock', 'email_address')->class('label') }}
                         <div class="control">
-                            {{ Form::text('project_lock_percentage', $fields->project_lock_percentage ?? NULL, ['required', 'class' => 'input', 'rows' => 2, 'cols' => 40, 'placeholder' => '95', 'style' => 'height: auto !important']) }}
+                            {!! html()->textarea('project_lock_percentage', $fields->project_lock_percentage ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->rows(2)
+                                ->cols(40)
+                                ->placeholder(95)
+                                ->style('height: auto !important') !!}
                         </div>
                         <small class="lead"></small>
                     </div>
                   
                   
                   <div class="field">
-                        {{ Form::label('email_address', 'CFO restriction', array('class' => 'label')) }}
+                    {{ html()->label('CFO restriction', 'email_address')->class('label') }}
                         <div class="control">                   
-                           <input type="checkbox" name="cfo_restriction" value="1" {{$fields->cfo_restriction == '1' ? 'checked' : null }}> 
+                            <input type="checkbox" name="cfo_restriction" value="1" {{ isset($fields->cfo_restriction) && $fields->cfo_restriction == '1' ? 'checked' : '' }}>
                         </div>
                         <small class="lead"></small>
                     </div>
@@ -91,7 +100,7 @@
                 </div>
             </div>
 
-            {{ Form::close() }}
+            {!! html()->form()->close() !!}
         </div>
     </article>
 @endsection

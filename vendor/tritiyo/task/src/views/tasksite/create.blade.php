@@ -76,7 +76,7 @@
 
                     <div class="field">
 
-                        {{ Html::label('site_id', 'Sites', array('class' => 'label')) }}
+                        {{ Html::label('Sites', 'site_id', array('class' => 'label')) }}
                         <div class="control">
                             <div dclass="select is-multiple">
                                 @php
@@ -108,7 +108,7 @@
                 </div>
                 <div class="column is-6">
                     <div class="field">
-                        {{ Html::label('resource_id', 'Site Resources', array('class' => 'label')) }}
+                        {{ Html::label('Site Resources', 'resource_id', array('class' => 'label')) }}
                         <div class="control">
                             <div sclass="select is-multiple">
 

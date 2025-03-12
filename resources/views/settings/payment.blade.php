@@ -53,13 +53,22 @@
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('settings.payment', 2), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
+            {!! html()->form('POST', route('settings.payment', 2))
+                ->attribute('id', 'add_user')
+                ->attribute('files', true)
+                ->attribute('autocomplete', 'off')
+                ->open() !!}
             <div class="columns">
                 <div class="column is-12">
                     <div class="field">
-                        {{ Form::label('name', 'Settings Name', array('class' => 'label')) }}
+
+                        {{ html()->label('Settings Name', 'name')->class('label') }}
+                        
                         <div class="control">
-                            {{ Form::text('name', $setting->name ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter setting name...']) }}
+                            {!! html()->text('name', $setting->name ?? NULL)
+                                ->required()
+                                ->class('input')                                
+                                ->placeholder('Enter setting name...') !!}
                         </div>
                     </div>
                 </div>
@@ -71,58 +80,74 @@
             }
             ?>
 
-            {{--            <div class="columns">--}}
-            {{--                <div class="column is-4">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('company_name', 'Company Name', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{--                            {{ Form::text('company_name', $fields->company_name ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter company name...']) }}--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="column is-4">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('company_slogan', 'Company Slogan', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{--                            {{ Form::text('company_slogan', $fields->company_slogan ?? NULL, ['class' => 'input', 'placeholder' => 'Enter company slogan...']) }}--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="column is-4">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('address', 'Company Address', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{--                            {{ Form::text('address', $fields->address ?? NULL, ['class' => 'input', 'placeholder' => 'Enter address...']) }}--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--            </div>--}}
-            {{--            <div class="columns">--}}
-            {{--                <div class="column is-4">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('company_phone', 'Company Phone', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{--                            {{ Form::text('company_phone', $fields->company_phone ?? NULL, ['class' => 'input', 'placeholder' => 'Enter phone...']) }}--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="column is-4">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('company_email', 'Company Email', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{--                            {{ Form::text('company_email', $fields->company_email ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter company email...']) }}--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--                <div class="column is-4">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('company_website', 'Company Website', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{--                            {{ Form::text('company_website', $fields->company_website ?? NULL, ['class' => 'input', 'placeholder' => 'Enter company website...']) }}--}}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--            </div>--}}
+            <div class="columns">
+                <div class="column is-4">
+                    <div class="field">
+                        {{ html()->label('Company Name', 'company_name')->class('label') }}
+                        <div class="control">
+                            {{ html()->text('company_name', $fields->company_name ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Enter company name...') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="field">
+                        {{ html()->label('Company Slogan', 'company_slogan')->class('label') }}
+                        <div class="control">
+                            {{ html()->text('company_slogan', $fields->company_slogan ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter company slogan...') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="field">
+                        {{ html()->label('Company Address', 'address')->class('label') }}
+                        <div class="control">
+                            {{ html()->text('address', $fields->address ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter address...') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column is-4">
+                    <div class="field">
+                        {{ html()->label('Company Phone', 'company_phone')->class('label') }}
+                        <div class="control">
+                            {{ html()->text('company_phone', $fields->company_phone ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter phone...') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="field">
+                        {{ html()->label('Company Email', 'company_email')->class('label') }}
+                        <div class="control">
+                            {{ html()->text('company_email', $fields->company_email ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Enter company email...') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="field">
+                        {{ html()->label('Company Website', 'company_website')->class('label') }}
+                        <div class="control">
+                            {{ html()->text('company_website', $fields->company_website ?? NULL)
+                                ->class('input')
+                                ->placeholder('Enter company website...') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="columns">
                 <div class="column">
                     <div class="field is-grouped">
@@ -133,7 +158,7 @@
                 </div>
             </div>
 
-            {{ Form::close() }}
+            {!! html()->form()->close() !!}
         </div>
     </article>
 @endsection

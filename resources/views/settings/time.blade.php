@@ -44,13 +44,18 @@
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('settings.time', 3), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_user', 'files' => true, 'autocomplete' => 'off')) }}
+            {!! html()->form('PATCH', route('settings.time', 3))
+                ->attribute('id', 'add_user')
+                ->attribute('files', true)
+                ->attribute('autocomplete', 'off')
+                ->open() !!}
+
             <div class="columns">
                 <div class="column is-12">
                     <div class="field">
-                        {{ Form::label('name', 'Settings Name', array('class' => 'label')) }}
+                        {{ html()->label('Settings Name', 'name')->class('label') }}
                         <div class="control">
-                            {{ Form::text('name', $setting->name ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter setting name...']) }}
+                            {{ html()->text('name', $setting->name ?? NULL)->required()->class('input')->placeholder('Enter setting name...') }}
                         </div>
                     </div>
                 </div>
@@ -65,9 +70,12 @@
             <div class="columns">
                 <div class="column is-12">
                     <div class="field">
-                        {{ Form::label('time_zone', 'Time Zone', array('class' => 'label')) }}
+                        {{ html()->label('Time Zone', 'time_zone')->class('label') }}
                         <div class="control">
-                            {{ Form::text('time_zone', $fields->company_name ?? 'Asia/Dhaka', ['required', 'class' => 'input', 'readonly' => true]) }}
+                            {{ html()->text('time_zone', $fields->company_name ?? 'Asia/Dhaka')
+                                ->required()
+                                ->class('input')
+                                ->attribute('readonly', true) }}
                         </div>
                     </div>
                 </div>
@@ -143,10 +151,13 @@
                 </div>
                 */ ?>
                 <div class="column is-3">
-                    <div class="field">
-                        {{ Form::label('task_creation_end', 'Task Create End Time', array('class' => 'label')) }}
+                    <div class="field">                        
+                        {{ html()->label('Task Create End Time', 'task_creation_end')->class('label') }}
                         <div class="control">
-                            {{ Form::text('task_creation_end', $fields->task_creation_end ?? NULL, ['class' => 'input', 'placeholder' => 'Ex: 0400pm']) }}
+                            {{ html()->text('task_creation_end', $fields->task_creation_end ?? NULL)
+                                ->class('input')
+                                ->placeholder('Ex: 0400pm') }}
+
                         </div>
                     </div>
                 </div>
@@ -154,18 +165,24 @@
               
                 <div class="column is-3">
                     <div class="field">
-                        {{ Form::label('proof_submission_end', 'Proof Submission End Time', array('class' => 'label')) }}
+                        {{ html()->label('Proof Submission End Time', 'proof_submission_end')->class('label') }}                        
                         <div class="control">
-                            {{ Form::text('proof_submission_end', $fields->proof_submission_end ?? NULL, ['class' => 'input', 'placeholder' => 'Ex: 0400pm']) }}
+                            {{ html()->text('proof_submission_end', $fields->proof_submission_end ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Ex: 0400pm') }}
                         </div>
                     </div>
                 </div>
               
                  <div class="column is-3">
                     <div class="field">
-                        {{ Form::label('approval_time_end', 'Approver Approve End Time', array('class' => 'label')) }}
+                        {{ html()->label('Approver Approve End Time', 'approval_time_end')->class('label') }}                        
                         <div class="control">
-                            {{ Form::text('approval_time_end', $fields->approval_time_end ?? NULL, ['class' => 'input', 'placeholder' => 'Ex: 0400pm']) }}
+                            {{ html()->text('approval_time_end', $fields->approval_time_end ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Ex: 0400pm') }}
                         </div>
                     </div>
                 </div>
@@ -173,24 +190,29 @@
               
               	<div class="column is-3">
                     <div class="field">
-                        {{ Form::label('requsition_submission_manager_end', 'Manager Requisition Submission End Time', array('class' => 'label')) }}
+                        {{ html()->label('Manager Requisition Submission End Time', 'requsition_submission_manager_end')->class('label') }}
                         <div class="control">
-                            {{ Form::text('requsition_submission_manager_end', $fields->requsition_submission_manager_end ?? NULL, ['class' => 'input', 'placeholder' => 'Ex: 0400pm']) }}
+                            {{ html()->text('requsition_submission_manager_end', $fields->requsition_submission_manager_end ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Ex: 0400pm') }}
+
                         </div>
                     </div>
                 </div>
               
               	<div class="column is-3">
                     <div class="field">
-                        {{ Form::label('requsition_submission_cfo_end', 'CFO Requisition Submission End Time', array('class' => 'label')) }}
+                        {{ html()->label('CFO Requisition Submission End Time', 'requsition_submission_cfo_end')->class('label') }}                        
                         <div class="control">
-                            {{ Form::text('requsition_submission_cfo_end', $fields->requsition_submission_cfo_end ?? NULL, ['class' => 'input', 'placeholder' => 'Ex: 0400pm']) }}
+                            {{ html()->text('requsition_submission_cfo_end', $fields->requsition_submission_cfo_end ?? NULL)
+                                ->required()
+                                ->class('input')
+                                ->placeholder('Ex: 0400pm') }}
+
                         </div>
                     </div>
-                </div>
-              
-              
-              
+                </div>              
             </div>
             <div class="columns">
                 <div class="column">
@@ -201,7 +223,7 @@
                     </div>
                 </div>
             </div>
-            {{ Form::close() }}
+            {!! html()->form()->close() !!}
         </div>
     </article>
 @endsection
