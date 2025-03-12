@@ -1,26 +1,25 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Edit Task
-@endsection
+<?php $__env->stopSection(); ?>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'Edit Task',
             'spSubTitle' => 'Edit a single task',
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
             'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
@@ -28,47 +27,48 @@
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
 
     <article class="panel is-primary">
-        @include('task::layouts.tab')
+        
+        
+        
+        <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         <div class="customContainer">
-            {!! Html::form()
-                ->attribute('action', route('tasks.update', $task->id))
-                ->method('PUT')
-                ->attribute('id', 'add_route')
-                ->attribute('class', 'task_table')
-                ->acceptsFiles()
-                ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}            
+            <?php echo e(Form::open(array('url' => route('tasks.update', $task->id), 'method' => 'PUT', 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_table', 'files' => true, 'autocomplete' => 'off'))); ?>
 
-            {{ Html::input('hidden', 'task_type', $task->task_type ?? '') }}
-            {{ Html::input('hidden', 'task_assigned_to_head', $task->task_assigned_to_head != null ?? 'Yes') }}
+
+            <?php echo e(Form::hidden('task_type', $task->task_type ?? '')); ?>
+
+            <?php echo e(Form::hidden('task_assigned_to_head', $task->task_assigned_to_head != null ?? 'Yes')); ?>
+
 
             <div class="columns">
 
                 <div class="column is-3">
                     <div class="field">
-                        {{ Html::label('project_id', 'Project', array('class' => 'label', 'style' => 'display: inline-block')) }}
+                        <?php echo e(Form::label('project_id', 'Project', array('class' => 'label', 'style' => 'display: inline-block'))); ?>
+
 
                         <div class="control">
-                            @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isHR(auth()->user()->id))
+                            <?php if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isHR(auth()->user()->id)): ?>
                                 <?php $projects = \Tritiyo\Project\Models\Project::where('manager', auth()->user()->id)->pluck('name', 'id')->prepend('Select Project', ''); ?>
-                            @else
+                            <?php else: ?>
                                 <?php $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
-                            @endif
+                            <?php endif; ?>
                             <?php //$projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', ''); ?>
-                            {{ Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'id' => 'project_select']) }}
+                            <?php echo e(Form::select('project_id', $projects, $task->project_id ?? NULL, ['class' => 'input', 'id' => 'project_select'])); ?>
+
                         </div>
                     </div>
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        {{ Html::label('site_head', 'Site Head', array('class' => 'label')) }}
+                        <?php echo e(Form::label('site_head', 'Site Head', array('class' => 'label'))); ?>
+
                         <div class="control">
                             <?php
                             /**
@@ -100,32 +100,36 @@
 
                             ?>
                             <select class="input" name="site_head" id="sitehead_select">
-                                <option value="{{ $task->site_head ?? NULL }}" selected>
-                                    {{ \App\Models\User::where('id', $task->site_head)->first()->name ?? NULL }}
+                                <option value="<?php echo e($task->site_head ?? NULL); ?>" selected>
+                                    <?php echo e(\App\Models\User::where('id', $task->site_head)->first()->name ?? NULL); ?>
+
                                 </option>
-                                @foreach($siteHead as $resource)
-                                    @php
+                                <?php $__currentLoopData = $siteHead; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $resource): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
-                                    @endphp
+                                    ?>
                                     <option
-                                        data-result="{{ $count_result }}"
-                                        value="{{ $resource->id }}" {{ $resource->id == $task->site_head ? 'selected=""' : NULL }}>
-                                        {{ $resource->name ?? NULL }}
+                                        data-result="<?php echo e($count_result); ?>"
+                                        value="<?php echo e($resource->id); ?>" <?php echo e($resource->id == $task->site_head ? 'selected=""' : NULL); ?>>
+                                        <?php echo e($resource->name ?? NULL); ?>
+
                                     </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
 
 
                             <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
-                            {{--                            {{ Form::select('site_head', $siteHead, $task->site_head ?? NULL, ['class' => 'input', 'id' => 'sitehead_select']) }}--}}
+                            
                         </div>
                     </div>
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        {{ Html::label('task_name', 'Task Name', array('class' => 'label')) }}
+                        <?php echo e(Form::label('task_name', 'Task Name', array('class' => 'label'))); ?>
+
                         <div class="control">
-                            {{ Html::input('text','task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...']) }}
+                            <?php echo e(Form::text('task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Task Name...'])); ?>
+
                         </div>
                     </div>
                 </div>
@@ -140,9 +144,11 @@
             <div class="columns">
                 <div class="column is-9">
                     <div class="field">
-                        {{ Html::label('task_details', 'Task Details', array('class' => 'label')) }}
+                        <?php echo e(Form::label('task_details', 'Task Details', array('class' => 'label'))); ?>
+
                         <div class="control">
-                            {{ Html::input('textarea','task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'rows' => 5, 'placeholder' => 'Enter task details...']) }}
+                            <?php echo e(Form::textarea('task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'rows' => 5, 'placeholder' => 'Enter task details...'])); ?>
+
                         </div>
                     </div>
                 </div>
@@ -156,22 +162,23 @@
                     </div>
                 </div>
             </div>
-            {{ Html::form()->close() }}
+            <?php echo e(Form::close()); ?>
+
         </div>
     </article>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
-    @php
+<?php $__env->startSection('column_right'); ?>
+    <?php
         $task = \Tritiyo\Task\Models\Task::where('id', $task->id)->first();
-    @endphp
+    ?>
 
-    @include('task::task_status_sidebar')
-@endsection
+    <?php echo $__env->make('task::task_status_sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
 
 
 
-@section('cusjs')
+<?php $__env->startSection('cusjs'); ?>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
@@ -221,7 +228,7 @@
             let projectId = $(this).val();
             $.ajax({
                 type: "GET",
-                url: "{{route('project.remain.balance', '')}}/"+projectId,
+                url: "<?php echo e(route('project.remain.balance', '')); ?>/"+projectId,
                 success: function(data){
                    // console.log(data);
                     let html = '<div class="statusSuccessMessage is-warning mb-2" style="height: 26px; display: block; padding: 11px;">'
@@ -238,7 +245,7 @@
                     $("#remaining_project_budget").empty().append(html);
                         
                   
-                   let projectLockPercent = "{{ \Tritiyo\Project\Helpers\ProjectHelper::projectLockPercentage() }}"; 
+                   let projectLockPercent = "<?php echo e(\Tritiyo\Project\Helpers\ProjectHelper::projectLockPercentage()); ?>"; 
                   
                     if(data.usage * 100 / data.total >= projectLockPercent){
                         alert('Already you have used '+projectLockPercent+'% of budget. So you can not create any task under this project.')
@@ -273,4 +280,6 @@
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/edit.blade.php ENDPATH**/ ?>

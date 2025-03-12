@@ -1,16 +1,12 @@
 @extends('layouts.app')
-@section('title')
-    Create Site
-@endsection
+@section('title', 'Create Site')
+
 @if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
-    @php
-        $addUrl = route('sites.create');
-    @endphp
+    @php $addUrl = route('sites.create'); @endphp
 @else
-    @php
-        $addUrl = '#';
-    @endphp
+    @php $addUrl = '#'; @endphp
 @endif
+
 <section class="hero is-white borderBtmLight">
     <nav class="level">
         @include('component.title_set', [
@@ -21,7 +17,6 @@
 
         @include('component.button_set', [
             'spShowButtonSet' => true,
-            'spAddUrl' => null,
             'spAddUrl' => $addUrl,
             'spAllData' => route('sites.index'),
             'spSearchData' => route('sites.search'),
@@ -34,11 +29,12 @@
             'spAllData' => route('sites.index'),
             'spSearchData' => route('sites.search'),
             'spPlaceholder' => 'Search sites...',
-            'spMessage' => $message = $message ?? NULl,
-            'spStatus' => $status = $status ?? NULL
+            'spMessage' => $message ?? NULL,
+            'spStatus' => $status ?? NULL
         ])
     </nav>
 </section>
+
 @section('column_left')
     <article class="panel is-primary">
         <p class="panel-tabs">
@@ -46,98 +42,61 @@
         </p>
 
         <div class="customContainer">
-            {{ Form::open(array('url' => route('sites.store'), 'method' => 'post', 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ html()->form('POST', route('sites.store'))->id('add_route')->attribute('autocomplete', 'off')->open() }}
             <div class="columns">
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('project_id', 'Project', array('class' => 'label')) }}
+                        {{ html()->label('Project', 'project_id')->class('label') }}
                         <div class="control">
-                            <?php
-                            //$projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', '');
-                            $projects = DB::select(
-                                DB::raw("SELECT * FROM (
-                                        SELECT *, (SELECT project_status FROM project_ranges WHERE project_id = projects.id ORDER BY id DESC LIMIT 0,1) AS qq FROM projects
-                                    ) AS mm WHERE mm.qq = 'Active'")
-                            );
-
-                            ?>
-{{--                            {{ Form::select('project_id', $projects, $site->project_id ?? NULL, ['class' => 'input is-small']) }}--}}
                             <select name="project_id" class="input is-small" required>
                                 <option value="">Select project</option>
-                                @foreach($projects as $project)
-                                    <option
-                                        value="{{ $project->id }}" {{ (!empty($site->project_id) && ($project->id == $site->project_id)) ? 'selected="selected"' : NULL }}>
+                                @foreach(DB::select(DB::raw("SELECT * FROM (SELECT *, (SELECT project_status FROM project_ranges WHERE project_id = projects.id ORDER BY id DESC LIMIT 1) AS status FROM projects) AS filtered WHERE filtered.status = 'Active'")) as $project)
+                                    <option value="{{ $project->id }}" {{ !empty($site->project_id) && $project->id == $site->project_id ? 'selected' : '' }}>
                                         {{ $project->name }}
                                     </option>
                                 @endforeach
                             </select>
-
                         </div>
                     </div>
                 </div>
                 <div class="column is-2">
                     <div class="field">
-                        {{Form::label('location','Location',['class' => 'label'])}}
+                        {{ html()->label('Location', 'location')->class('label') }}
                         <div class="control">
                             <div class="select is-small">
-                                <?php
-                                $upazilas = \DB::table('upazilas')->get()->pluck('name', 'name');
-                                //dd($districts);
-                                //$districts = ['' => 'Select district', 'Married' => 'Married', 'Unmarried' => 'Unmarried', 'Other' => 'Other'];
-                                ?>
-                                {{ Form::select('location', $upazilas ?? NULL, $site->location ?? NULL, ['class' => 'input', 'required' => true]) }}
+                                {{ html()->select('location', \DB::table('upazilas')->pluck('name', 'name'), $site->location ?? NULL)->class('input')->required() }}
                             </div>
                         </div>
                     </div>
-{{--                    <div class="field">--}}
-{{--                        {{ Form::label('location', 'Location', array('class' => 'label')) }}--}}
-{{--                        <div class="control">--}}
-{{--                            {{ Form::text('location', $site->location ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter location...']) }}--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
                 </div>
-
                 <div class="column is-4">
                     <div class="field">
-                        {{ Form::label('site_code', 'Site Code', array('class' => 'label')) }}
+                        {{ html()->label('Site Code', 'site_code')->class('label') }}
                         <div class="control">
-                            {{ Form::text('site_code', $site->site_code ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter Site Code...']) }}
+                            {{ html()->text('site_code', $site->site_code ?? NULL)->class('input is-small')->placeholder('Enter Site Code...') }}
                         </div>
                     </div>
                 </div>
-
                 <div class="column is-2">
                     <div class="field">
-                        {{ Form::label('task_limit', 'Limit Of Task', array('class' => 'label')) }}
+                        {{ html()->label('Limit Of Task', 'task_limit')->class('label') }}
                         <div class="control">
-                            {{ Form::text('task_limit', $site->task_limit ?? NULL, ['class' => 'input is-small', 'placeholder' => 'Enter limit of task...']) }}
+                            {{ html()->text('task_limit', $site->task_limit ?? NULL)->class('input is-small')->placeholder('Enter limit of task...') }}
                         </div>
                     </div>
                 </div>
             </div>
-            {{--            <div class="columns">--}}
-            {{--                 <div class="column is-3">--}}
-            {{--                    <div class="field">--}}
-            {{--                        {{ Form::label('budget', 'Budget', array('class' => 'label')) }}--}}
-            {{--                        <div class="control">--}}
-            {{ Form::hidden('budget', $site->budget ?? NULL, ['class' => 'input', 'placeholder' => 'Enter budget...']) }}
-            {{--                        </div>--}}
-            {{--                    </div>--}}
-            {{--                </div>--}}
-            {{--            </div>--}}
-
-
-
+            {{ html()->hidden('budget', $site->budget ?? NULL) }}
             <div class="columns">
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            <button class="button is-success is-small">Save Changes</button>
+                            {{ html()->button('Save Changes')->class('button is-success is-small')->type('submit') }}
                         </div>
                     </div>
                 </div>
             </div>
-            {{ Form::close() }}
+            {{ html()->form()->close() }}
         </div>
     </article>
 @endsection
@@ -147,15 +106,13 @@
         <div class="box">
             <h1 class="title is-5">Important Note</h1>
             <p>
-                The default password is stored in the database when the admin authority creates the user.
-                <br/>
+                The default password is stored in the database when the admin authority creates the user.<br/>
                 Default password: <strong>bizradix@123</strong>
             </p>
             <br/>
             <p>
                 After you provide the basic information, you create a list of users, now you will find the created user
-                and
-                update the information for your user.
+                and update the information for your user.
             </p>
         </div>
     </article>

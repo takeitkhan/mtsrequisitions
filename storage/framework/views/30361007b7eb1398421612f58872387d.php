@@ -1,56 +1,55 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Include vehicle information of task
-@endsection
+<?php $__env->stopSection(); ?>
 
-@php
+<?php
 $task_id = request()->get('task_id');
 $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
 
-@endphp
+?>
 
-@php
+<?php
     $remaining_balance = \Tritiyo\Project\Helpers\ProjectHelper::remainingBalance($task->project_id, $task->current_range_id);
     $today_use = \Tritiyo\Task\Helpers\RequisitionData::todayManagerUsedAmount($task->project_id, $task->current_range_id);
     $of95 = $remaining_balance - $today_use;
-@endphp
+?>
 
 <div style="display: none;">
-    <input type="text" value="{{ $of95 }}" id="of95" />
+    <input type="text" value="<?php echo e($of95); ?>" id="of95" />
 </div>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
         'spTitle' => 'Vehicle',
         'spSubTitle' => 'Add a vehicle of task',
         'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
         'spShowButtonSet' => true,
         'spAddUrl' => null,
         'spAddUrl' => route('tasks.create'),
         'spAllData' => route('tasks.index'),
         'spSearchData' => route('tasks.search'),
         'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
         'spShowFilterSet' => true,
         'spPlaceholder' => 'Search tasks...',
         'spMessage' => $message = $message ?? NULl,
         'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
     <article class="panel is-primary" id="app">
         <a style="float: right; display: block">
             <span style="cursor: pointer;" class="tag is-success" id="addrow">Add Breakdown &nbsp; <strong>+</strong></span>
         </a>
-        @include('task::layouts.tab')
+        <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         <div class="customContainer">
             <?php            
             if (!empty($task_id) && $task_id) {
@@ -62,54 +61,61 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             }            
             ?>
 
-            {!! Html::form()
+            <?php echo Html::form()
                 ->attribute('action', $routeUrl)
                 ->method($method)
                 ->attribute('id', 'add_route')
                 ->attribute('class', 'task_vehicle_table')
                 ->acceptsFiles()
                 ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}
+                ->open(); ?>
 
-            @if ($task_id)
-                {!! Html::hidden('task_id', $task_id ?? '') !!}
-            @endif
-            @if (!empty($taskId))
-                {!! Html::hidden('task_id', $taskId ?? '') !!}
-            @endif
 
-            @php
+            <?php if($task_id): ?>
+                <?php echo Html::hidden('task_id', $task_id ?? ''); ?>
+
+            <?php endif; ?>
+            <?php if(!empty($taskId)): ?>
+                <?php echo Html::hidden('task_id', $taskId ?? ''); ?>
+
+            <?php endif; ?>
+
+            <?php
                 $vehicles = \Tritiyo\Vehicle\Models\Vehicle::get();
                 $getTaskVehicle = \Tritiyo\Task\Models\TaskVehicle::where('task_id', $task_id)->get();
-            @endphp
+            ?>
             <div id="myTable">
-                @if (count($getTaskVehicle) > 0)
-                    @foreach ($getTaskVehicle as $veh)
+                <?php if(count($getTaskVehicle) > 0): ?>
+                    <?php $__currentLoopData = $getTaskVehicle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $veh): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
-                        <div class="columns s{{ $veh->id }}">
+                        <div class="columns s<?php echo e($veh->id); ?>">
                             <div class="column is-2">
                                 <div class="field">
-                                    {{ Html::label('vehicle_id', 'Vehicle', ['class' => 'label']) }}
+                                    <?php echo e(Html::label('vehicle_id', 'Vehicle', ['class' => 'label'])); ?>
+
                                     <div class="control">
                                         <select name="vehicle_id[]" id="vehicle_select" class="input is-small" required>
-                                            @foreach ($vehicles as $vehicle)
-                                                <option value="{{ $vehicle->id }}"
-                                                    {{ $veh->vehicle_id == $vehicle->id ? 'selected' : '' }}>
-                                                    {{ $vehicle->name }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $vehicles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vehicle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($vehicle->id); ?>"
+                                                    <?php echo e($veh->vehicle_id == $vehicle->id ? 'selected' : ''); ?>>
+                                                    <?php echo e($vehicle->name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="column is-2">
-                                {{ Html::label('vehicle_rent', 'Vehicle Rent', ['class' => 'label']) }}
-                                {{ Html::input('number','vehicle_rent[]', $veh->vehicle_rent, ['class' => 'input is-small xvehicle_rent_id']) }}
+                                <?php echo e(Html::label('vehicle_rent', 'Vehicle Rent', ['class' => 'label'])); ?>
+
+                                <?php echo e(Html::input('number','vehicle_rent[]', $veh->vehicle_rent, ['class' => 'input is-small xvehicle_rent_id'])); ?>
+
                             </div>
                             <div class="column is-6">
-                                {{ Html::label('vehicle_note', 'Note', ['class' => 'label']) }}
-                                {{ Html::input('text','vehicle_note[]', $veh->vehicle_note, ['class' => 'input is-small']) }}
+                                <?php echo e(Html::label('vehicle_note', 'Note', ['class' => 'label'])); ?>
+
+                                <?php echo e(Html::input('text','vehicle_note[]', $veh->vehicle_note, ['class' => 'input is-small'])); ?>
+
                             </div>
                             <div class="column is-1">
                                 <label></label> <br />
@@ -117,16 +123,16 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                             </div>
 
                         </div>
-                    @endforeach
-                @else
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php else: ?>
                     <div class="columns">
                         <div class="column is-2">
                             <label for="vehicle_id" class="label">Vehicle</label>
                             <select name="vehicle_id[]" id="vehicle_select" class="input is-small" required>
                                 <option></option>
-                                @foreach ($vehicles as $vehicle)
-                                    <option value="{{ $vehicle->id }}">{{ $vehicle->name }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $vehicles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vehicle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($vehicle->id); ?>"><?php echo e($vehicle->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="column is-2">
@@ -144,7 +150,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         </div>
                     </div>
 
-                @endif
+                <?php endif; ?>
             </div>
 
             <div class="columns">
@@ -152,16 +158,17 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="field is-grouped"><div class="control"><button class="button is-success is-small" id="save_changes">Save Changes</button></div></div>
                 </div>
             </div>
-            {!! Html::form()->close() !!}
+            <?php echo Html::form()->close(); ?>
+
         </div>
 
     </article>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
-    @include('task::task_status_sidebar')
-@endsection
-@section('cusjs')
+<?php $__env->startSection('column_right'); ?>
+    <?php echo $__env->make('task::task_status_sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('cusjs'); ?>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
         //Add Row Function
@@ -243,4 +250,6 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
         }
         vehicleSelectRefresh();
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/taskvehicle/create.blade.php ENDPATH**/ ?>

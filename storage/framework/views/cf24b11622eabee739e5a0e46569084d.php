@@ -1,29 +1,28 @@
-@extends('layouts.app')
-@section('title', 'Edit Vehicle')
+<?php $__env->startSection('title', 'Edit Vehicle'); ?>
 
-@if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
-    @php $addUrl = route('vehicles.create'); @endphp
-@else
-    @php $addUrl = '#'; @endphp
-@endif
+<?php if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id)): ?>
+    <?php $addUrl = route('vehicles.create'); ?>
+<?php else: ?>
+    <?php $addUrl = '#'; ?>
+<?php endif; ?>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'Edit Vehicle',
             'spSubTitle' => 'Edit a single vehicle',
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => $addUrl,
             'spAllData' => route('vehicles.index'),
             'spSearchData' => route('vehicles.search'),
             'spTitle' => 'Vehicles',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spAddUrl' => route('vehicles.create'),
             'spAllData' => route('vehicles.index'),
@@ -31,32 +30,37 @@
             'spPlaceholder' => 'Search vehicles...',
             'spMessage' => $message ?? null,
             'spStatus' => $status ?? null
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
 
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
     <article class="panel is-primary">
         <p class="panel-tabs">
             <a class="is-active">Vehicle Information</a>
         </p>
 
         <div class="customContainer">
-            {!! html()->form('PUT', route('vehicles.update', $vehicle->id))->id('add_route')->attribute('autocomplete', 'off')->open() !!}
+            <?php echo html()->form('PUT', route('vehicles.update', $vehicle->id))->id('add_route')->attribute('autocomplete', 'off')->open(); ?>
+
             <div class="columns">
                 <div class="column is-3">
                     <div class="field">
-                        {!! html()->label('Name', 'name')->class('label') !!}
+                        <?php echo html()->label('Name', 'name')->class('label'); ?>
+
                         <div class="control">
-                            {!! html()->text('name', $vehicle->name ?? '')->class('input')->placeholder('Enter name...') !!}
+                            <?php echo html()->text('name', $vehicle->name ?? '')->class('input')->placeholder('Enter name...'); ?>
+
                         </div>
                     </div>
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        {!! html()->label('Vehicle Size', 'size')->class('label') !!}
+                        <?php echo html()->label('Vehicle Size', 'size')->class('label'); ?>
+
                         <div class="control">
-                            {!! html()->text('size', $vehicle->size ?? '')->class('input')->placeholder('Enter Vehicle Size...') !!}
+                            <?php echo html()->text('size', $vehicle->size ?? '')->class('input')->placeholder('Enter Vehicle Size...'); ?>
+
                         </div>
                     </div>
                 </div>
@@ -64,9 +68,11 @@
             <div class="columns">
                 <div class="column is-3">
                     <div class="field">
-                        {!! html()->label('Probably Cost', 'probably_cost')->class('label') !!}
+                        <?php echo html()->label('Probably Cost', 'probably_cost')->class('label'); ?>
+
                         <div class="control">
-                            {!! html()->text('probably_cost', $vehicle->probably_cost ?? '')->class('input')->placeholder('Enter probably cost...') !!}
+                            <?php echo html()->text('probably_cost', $vehicle->probably_cost ?? '')->class('input')->placeholder('Enter probably cost...'); ?>
+
                         </div>
                     </div>
                 </div>
@@ -75,17 +81,19 @@
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            {!! html()->button('Save Changes')->class('button is-success is-small') !!}
+                            <?php echo html()->button('Save Changes')->class('button is-success is-small'); ?>
+
                         </div>
                     </div>
                 </div>
             </div>
-            {!! html()->form()->close() !!}
+            <?php echo html()->form()->close(); ?>
+
         </div>
     </article>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
+<?php $__env->startSection('column_right'); ?>
     <article class="is-primary">
         <div class="box">
             <h1 class="title is-5">Important Note</h1>
@@ -94,4 +102,6 @@
             </p>
         </div>
     </article>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\vehicle\src/views/edit.blade.php ENDPATH**/ ?>

@@ -43,14 +43,25 @@ if (!function_exists('category_sidebar_menu')) {
 
 
 if (!function_exists('delete_data')) {
-    function delete_data($route, $id, $title= '')
+    function delete_data($route, $id, $title = '')
     {
-        $html = \Form::open(['url' => route($route, $id), 'method' => 'DELETE', 'style' => 'margin-block-end: 0em']);
-        $html .= '<button onclick=" return confirm(\'Are you sure?\')" title="'.$title.'" type="submit" class="level-item" style="background: transparent; border: none; cursor: pointer;">
-        <span class="icon is-small is-red"><i class="fas fa-trash"></i></span></button>';
-        $html .= \Form::close();
+        $form = \Spatie\Html\Facades\Html::form()
+            ->attribute('action', route($route, $id))
+            ->method('DELETE')
+            ->style('margin-block-end: 0em')
+            ->open();
 
-        return $html;
+        $button = \Spatie\Html\Facades\Html::button()
+            ->attribute('onclick', "return confirm('Are you sure?')")
+            ->attribute('title', $title)
+            ->type('submit')
+            ->style('background: transparent; border: none; cursor: pointer;')
+            ->html('<span class="icon is-small is-red"><i class="fas fa-trash"></i></span>');
+
+        $form .= $button->toHtml();
+        $form .= \Spatie\Html\Facades\Html::form()->close();
+
+        return $form;
     }
 }
 

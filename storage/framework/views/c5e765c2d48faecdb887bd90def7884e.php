@@ -1,33 +1,32 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Create Task
-@endsection
-@php
+<?php $__env->stopSection(); ?>
+<?php
     if(request()->get('type') == 'emergency') {
     $title = 'you are creating an emergency task';
     } else {
     $title = 'you are creating a general task';
     }
 
-@endphp
+?>
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'Create Task',
             'spSubTitle' => $title,
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
             'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
@@ -35,10 +34,10 @@
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
 
   <?php 
       		if(auth()->user()->isManager(auth()->user()->id)){
@@ -85,10 +84,10 @@
       		//echo $billPendingTask;
       			
      		 ?>
-	@if($billPendingTask > 50 && auth()->user()->isManager(auth()->user()->id))
-  <span class="tag is-small is-tag is-danger  is-rounded" style="font-weight: 600;">You can not create any task, cause you have {{$billPendingTask}} pending bills to clear. please clear your pending bills. </span>
-      <a class="tag is-small is-tag is-warning is-dark is-rounded" href="{{route('tasks.index')}}?bill=pending">Click to view Pending Bills</a>
-	@else
+	<?php if($billPendingTask > 50 && auth()->user()->isManager(auth()->user()->id)): ?>
+  <span class="tag is-small is-tag is-danger  is-rounded" style="font-weight: 600;">You can not create any task, cause you have <?php echo e($billPendingTask); ?> pending bills to clear. please clear your pending bills. </span>
+      <a class="tag is-small is-tag is-warning is-dark is-rounded" href="<?php echo e(route('tasks.index')); ?>?bill=pending">Click to view Pending Bills</a>
+	<?php else: ?>
       <?php
           //echo date('hia');
           $taskCreationEndTime = \App\Models\Setting::timeSettings('task_creation_end');
@@ -99,16 +98,16 @@
 
      ?>
     <article class="panel is-primary">
-        @if(request()->get('type') != 'emergency')
-            <a style="display:block; float:right;" href="{{ route('tasks.create') }}?type=emergency"
+        <?php if(request()->get('type') != 'emergency'): ?>
+            <a style="display:block; float:right;" href="<?php echo e(route('tasks.create')); ?>?type=emergency"
                class="button is-small is-danger" aria-haspopup="true" aria-controls="dropdown-menu" style="height: 24px; margin-bottom: 6px;">
                 <span><i class="fas fa-plus"></i> Emergency Task</span>
             </a>
-        @endif
+        <?php endif; ?>
 
-        @if(!empty($task) && $task->id)
-            @include('task::layouts.tab')
-        @endif
+        <?php if(!empty($task) && $task->id): ?>
+            <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <?php endif; ?>
 
 
         <div class="customContainer">
@@ -120,29 +119,32 @@
                 $method = 'post';
             } ?>
 
-            {!! Html::form()
+            <?php echo Html::form()
                 ->attribute('action', $routeUrl)
                 ->method($method)
                 ->attribute('id', 'add_route')
                 ->acceptsFiles()
                 ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}
+                ->open(); ?>
+
             
 
-            @if(request()->get('type') == 'emergency')
-                {{ Html::input('hidden', 'task_type', $task->task_type ?? 'emergency') }}
-            @else
-                {{ Html::input('hidden', 'task_type', $task->task_type ?? 'general') }}
-            @endif
+            <?php if(request()->get('type') == 'emergency'): ?>
+                <?php echo e(Html::input('hidden', 'task_type', $task->task_type ?? 'emergency')); ?>
+
+            <?php else: ?>
+                <?php echo e(Html::input('hidden', 'task_type', $task->task_type ?? 'general')); ?>
+
+            <?php endif; ?>
             <div class="columns">
                 <div class="column is-4 p-2">
                     <div class="field">
-                        {{ Html::label('project_id', 'Project', array('class' => 'label', 'style' => 'display: inline-block')) }}
+                        <?php echo e(Html::label('project_id', 'Project', array('class' => 'label', 'style' => 'display: inline-block'))); ?>
+
 
 
                         <div class="scontrol">
-                            @if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isHR(auth()->user()->id))
+                            <?php if(auth()->user()->isManager(auth()->user()->id) || auth()->user()->isHR(auth()->user()->id)): ?>
                                 <?php
                                 /**
                                  * $projects = \Tritiyo\Project\Models\Project::leftJoin('project_ranges', function ($join) {
@@ -162,26 +164,28 @@
                                 );
                                 //dd($projects);
                                 ?>
-                            @else
+                            <?php else: ?>
                                 <?php
                                 $projects = \Tritiyo\Project\Models\Project::pluck('name', 'id')->prepend('Select Project', '');
                                 ?>
-                            @endif
+                            <?php endif; ?>
                             <select name="project_id" class="input" id="project_select" required>
                                 <option value="">Select project</option>
-                                @foreach($projects as $project)
+                                <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option
-                                        value="{{ $project->id }}" {{ (!empty($task->project_id) && ($project->id == $task->project_id)) ? 'selected="selected"' : NULL }}>
-                                        {{ $project->name }}
+                                        value="<?php echo e($project->id); ?>" <?php echo e((!empty($task->project_id) && ($project->id == $task->project_id)) ? 'selected="selected"' : NULL); ?>>
+                                        <?php echo e($project->name); ?>
+
                                     </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="column is-3 p-2">
                     <div class="field">
-                        {{ Html::label('site_head', 'Site Head', array('class' => 'label')) }}
+                        <?php echo e(Html::label('site_head', 'Site Head', array('class' => 'label'))); ?>
+
                         <div class="control">
                             <?php //$siteHead = \App\Models\User::where('role', 2)->pluck('name', 'id')->prepend('Select Site Head', ''); ?>
                             <?php
@@ -212,14 +216,15 @@
                             ?>
  							<select class="input" name="site_head" id="sitehead_select" required>
                                 <option></option>
-                                @foreach($siteHead as $resource)
-                                    @php
+                                <?php $__currentLoopData = $siteHead; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $resource): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
-                                    @endphp
-                                    <option value="{{ $resource->id }}" data-result="{{ $count_result }}">
-                                      {{ $resource->name }}
+                                    ?>
+                                    <option value="<?php echo e($resource->id); ?>" data-result="<?php echo e($count_result); ?>">
+                                      <?php echo e($resource->name); ?>
+
                               		</option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                            
                         </div>
@@ -228,9 +233,11 @@
 
                 <div class="column is-3 p-2">
                     <div class="field">
-                        {{ Html::label('task_name', 'Task Name', array('class' => 'label')) }}
+                        <?php echo e(Html::label('task_name', 'Task Name', array('class' => 'label'))); ?>
+
                         <div class="control">
-                            {{ Html::input('text', 'task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'required' => true, 'placeholder' => 'Enter Task Name...']) }}
+                            <?php echo e(Html::input('text', 'task_name', $task->task_name ?? NULL, ['class' => 'input is-small', 'required' => true, 'placeholder' => 'Enter Task Name...'])); ?>
+
                         </div>
                     </div>
                 </div>
@@ -246,9 +253,11 @@
 
                 <div class="column is-9">
                     <div class="field">
-                        {{ Html::label('task_details', 'Task Details [Please put all the activity details here]', array('class' => 'label')) }}
+                        <?php echo e(Html::label('task_details', 'Task Details [Please put all the activity details here]', array('class' => 'label'))); ?>
+
                         <div class="control">
-                            {{ Html::input('textarea', 'task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'required' => true,  'rows' => 5, 'placeholder' => 'Enter task details...']) }}
+                            <?php echo e(Html::input('textarea', 'task_details', $task->task_details ?? NULL, ['class' => 'textarea', 'required' => true,  'rows' => 5, 'placeholder' => 'Enter task details...'])); ?>
+
                         </div>
                     </div>
                 </div>
@@ -263,18 +272,19 @@
                     </div>
                 </div>
             </div>
-            {{ Html::form()->close() }}
+            <?php echo e(Html::form()->close()); ?>
+
         </div>
     </article>
 	<?php } ?>
-@endif
-@endsection
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
+<?php $__env->startSection('column_right'); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('cusjs')
+<?php $__env->startSection('cusjs'); ?>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
@@ -322,7 +332,7 @@
             let projectId = $(this).val();
             $.ajax({
                 type: "GET",
-                url: "{{route('project.remain.balance', '')}}/"+projectId,
+                url: "<?php echo e(route('project.remain.balance', '')); ?>/"+projectId,
                 success: function(data){
                    // console.log(data);
                     let html = '<div class="statusSuccessMessage is-warning mb-2" style="height: 26px; display: block; padding: 11px;">'
@@ -338,7 +348,7 @@
                     $(".tap1").hide();
                     $("#remaining_project_budget").empty().append(html);
 
-                      let projectLockPercent = "{{ \Tritiyo\Project\Helpers\ProjectHelper::projectLockPercentage() }}";
+                      let projectLockPercent = "<?php echo e(\Tritiyo\Project\Helpers\ProjectHelper::projectLockPercentage()); ?>";
 
                     if(data.usage * 100 / data.total >= projectLockPercent){
 
@@ -373,7 +383,7 @@
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
 
 <?php
@@ -394,3 +404,5 @@ WHERE QQ.site_head IS NULL
 ");
  **/
 ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/create.blade.php ENDPATH**/ ?>

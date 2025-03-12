@@ -1,58 +1,58 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Include requisition information of this task
-@endsection
+<?php $__env->stopSection(); ?>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'Requisition',
             'spSubTitle' => 'Add Requisition  of task',
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
             'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
 <?php
 $task_id = request()->get('task_id');
 $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 ?>
-@if(empty($task))
-    {{ Redirect::to('/dashboard') }}
-@else
-@section('column_left')
+<?php if(empty($task)): ?>
+    <?php echo e(Redirect::to('/dashboard')); ?>
+
+<?php else: ?>
+<?php $__env->startSection('column_left'); ?>
 
 
-@php
+<?php
 		$task_id = request()->get('task_id');
         $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
     
-@endphp
+?>
 
-@php
+<?php
     $remaining_balance = \Tritiyo\Project\Helpers\ProjectHelper::remainingBalance($task->project_id, $task->current_range_id);
     $today_use = \Tritiyo\Task\Helpers\RequisitionData::todayManagerUsedAmount($task->project_id, $task->current_range_id);
     $of95 = $remaining_balance - $today_use;
-@endphp
+?>
 
 <div style="display: none;">
-        <input type="text" value="{{ $of95 }}" id="of95" />
+        <input type="text" value="<?php echo e($of95); ?>" id="of95" />
 </div>
 
     <?php
@@ -65,7 +65,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
      ?>
     <article class="panel is-primary" id="app">
-        @include('task::layouts.tab')
+        <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         <div class="customContainer">
             <?php  if (!empty($taskrequisitionbill) && $taskrequisitionbill) {
                 $routeUrl = route('taskrequisitionbill.update', $taskrequisitionbill->id);
@@ -111,21 +111,23 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
             //->task_regular_amount ;
             ?>
 
-            {!! Html::form()
+            <?php echo Html::form()
                 ->attribute('action', $routeUrl)
                 ->method($method)
                 ->attribute('id', 'requisition_form')
                 ->acceptsFiles()
                 ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}
+                ->open(); ?>
 
-            @if($task_id)
-                {{ Html::input('hidden', 'task_id', $task_id ?? '') }}
-            @endif
-            @if(!empty($taskId))
-                {{ Html::input('hidden', 'tassk_id', $taskId ?? '') }}
-            @endif
+
+            <?php if($task_id): ?>
+                <?php echo e(Html::input('hidden', 'task_id', $task_id ?? '')); ?>
+
+            <?php endif; ?>
+            <?php if(!empty($taskId)): ?>
+                <?php echo e(Html::input('hidden', 'tassk_id', $taskId ?? '')); ?>
+
+            <?php endif; ?>
 
 
             <div class="columns">
@@ -139,31 +141,34 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column is-2">
                             <div class="field">
-                                {{ Html::label('project_id', 'Project', array('class' => 'label')) }}
+                                <?php echo e(Html::label('project_id', 'Project', array('class' => 'label'))); ?>
+
                                 <div class="control">
 
 
                                     <input type="hidden" name="project_id" class="input is-small"
-                                           value="{{$task->project_id}}"/>
-                                    <input type="text" class="input is-small" value="{{$projects->name}}" readonly/>
+                                           value="<?php echo e($task->project_id); ?>"/>
+                                    <input type="text" class="input is-small" value="<?php echo e($projects->name); ?>" readonly/>
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('project_manager', 'Project Manager', array('class' => 'label')) }}
+                                <?php echo e(Html::label('project_manager', 'Project Manager', array('class' => 'label'))); ?>
+
                                 <div class="control">
                                     <?php $projectManager = \App\Models\User::where('id', $task->user_id)->first();?>
                                     <input type="hidden" name="project_manager_id" class="input is-small"
-                                           value="{{$task->user_id}}"/>
-                                    <input type="text" class="input is-small" value="{{$projectManager->name ?? Null}}"
+                                           value="<?php echo e($task->user_id); ?>"/>
+                                    <input type="text" class="input is-small" value="<?php echo e($projectManager->name ?? Null); ?>"
                                            readonly/>
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('site_name', 'Site Code', array('class' => 'label')) }}
+                                <?php echo e(Html::label('site_name', 'Site Code', array('class' => 'label'))); ?>
+
                                 <div class="control">
                                     <?php
                                     	$taskSite = Tritiyo\Task\Models\TaskSite::where('task_id', $task->id)->first();
@@ -174,16 +179,18 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                         }
                                     ?>
                                     <input type="hidden" name="site_id" class="input is-small"
-                                           value="{{$taskSite}}"/>
-                                    <input type="text" class="input is-small" value="{{$getSite}}" readonly/>
+                                           value="<?php echo e($taskSite); ?>"/>
+                                    <input type="text" class="input is-small" value="<?php echo e($getSite); ?>" readonly/>
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('task_for', 'Task Created For', array('class' => 'label')) }}
+                                <?php echo e(Html::label('task_for', 'Task Created For', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('text', 'task_for', $task->task_for, ['required', 'class' => 'input is-small', 'readonly' => true]) }}
+                                    <?php echo e(Html::input('text', 'task_for', $task->task_for, ['required', 'class' => 'input is-small', 'readonly' => true])); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -195,37 +202,42 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
                     <fieldset class="pb-5">
                         <label>Vehicle Information
-                            <a href="{{route('taskvehicle.create')}}?task_id={{$task_id}}&information=vehicleinformation"
+                            <a href="<?php echo e(route('taskvehicle.create')); ?>?task_id=<?php echo e($task_id); ?>&information=vehicleinformation"
                                class="is-link is-size-7 is-small"> Edit </a>
                         </label>
-                        @if(is_array($getTaskVehicle->toArray()))
-                            @foreach( $getTaskVehicle as $veh)
+                        <?php if(is_array($getTaskVehicle->toArray())): ?>
+                            <?php $__currentLoopData = $getTaskVehicle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $veh): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="columns">
                                     <div class="column is-3">
                                         <div class="field">
-                                            {{ Html::label('vehicle_id', 'Vehicle', array('class' => 'label')) }}
+                                            <?php echo e(Html::label('vehicle_id', 'Vehicle', array('class' => 'label'))); ?>
+
                                             <div class="control">
                                                 <?php $vehicleName = \Tritiyo\Vehicle\Models\Vehicle::where('id', $veh->vehicle_id)->first()->name;?>
                                                 <input type="hidden" name="vehicle_id" class="input is-small"
-                                                       value="{{$veh->vehicle_id}}">
+                                                       value="<?php echo e($veh->vehicle_id); ?>">
                                                 <input type="text" name="" class="input is-small"
-                                                       value="{{$vehicleName}}"
+                                                       value="<?php echo e($vehicleName); ?>"
                                                        readonly>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="column is-3">
-                                        {{ Html::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label')) }}
-                                        {{ Html::input('text', 'vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small', 'readonly' => true)) }}
+                                        <?php echo e(Html::label('vehicle_rent', 'Vehicle Rent', array('class' => 'label'))); ?>
+
+                                        <?php echo e(Html::input('text', 'vehicle_rent[]', $veh->vehicle_rent, array('class' => 'input is-small', 'readonly' => true))); ?>
+
                                     </div>
                                     <div class="column is-6">
-                                        {{ Html::label('vehicle_note', 'Note', array('class' => 'label')) }}
-                                        {{ Html::input('text', 'vehicle_note[]', $veh->vehicle_note, array('class' => 'input is-small', 'readonly' => true)) }}
+                                        <?php echo e(Html::label('vehicle_note', 'Note', array('class' => 'label'))); ?>
+
+                                        <?php echo e(Html::input('text', 'vehicle_note[]', $veh->vehicle_note, array('class' => 'input is-small', 'readonly' => true))); ?>
+
                                     </div>
                                 </div>
-                            @endforeach
-                        @endif
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endif; ?>
                     </fieldset>
                     <!-- End Vehicle -->
 
@@ -234,42 +246,49 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
                     <fieldset class="pb-5">
                         <label>Material Information
-                            <a href="{{route('taskmaterial.create')}}?task_id={{$task_id}}&information=materialInformation"
+                            <a href="<?php echo e(route('taskmaterial.create')); ?>?task_id=<?php echo e($task_id); ?>&information=materialInformation"
                                class="is-link is-size-7 is-small"> Edit </a>
                         </label>
-                        @if(is_array($getTaskMaterial->toArray()))
-                            @foreach( $getTaskMaterial as $mat)
+                        <?php if(is_array($getTaskMaterial->toArray())): ?>
+                            <?php $__currentLoopData = $getTaskMaterial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="columns">
                                     <div class="column is-3">
                                         <div class="field">
-                                            {{ Html::label('material_id', 'Material', array('class' => 'label')) }}
+                                            <?php echo e(Html::label('material_id', 'Material', array('class' => 'label'))); ?>
+
                                             <div class="control">
                                                 <?php $materialName = \Tritiyo\Material\Models\Material::where('id', $mat->material_id)->first()->name;?>
                                                 <input type="hidden" name="material_id" class="input is-small"
-                                                       value="{{$mat->material_id}}">
+                                                       value="<?php echo e($mat->material_id); ?>">
                                                 <input type="text" name="" class="input is-small"
-                                                       value="{{$materialName}}"
+                                                       value="<?php echo e($materialName); ?>"
                                                        readonly>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="column is-2">
-                                        {{ Html::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                                        {{ Html::input('text', 'material_qty[]', $mat->material_qty, array('class' => 'input is-small', 'readonly' => true)) }}
+                                        <?php echo e(Html::label('material_qty', 'Material Qty', array('class' => 'label'))); ?>
+
+                                        <?php echo e(Html::input('text', 'material_qty[]', $mat->material_qty, array('class' => 'input is-small', 'readonly' => true))); ?>
+
                                     </div>
 
                                     <div class="column is-2">
-                                        {{ Html::label('material_amount', 'Amount', array('class' => 'label')) }}
-                                        {{ Html::input('text', 'material_amount[]', $mat->material_amount, array('class' => 'input is-small', 'readonly' => true)) }}
+                                        <?php echo e(Html::label('material_amount', 'Amount', array('class' => 'label'))); ?>
+
+                                        <?php echo e(Html::input('text', 'material_amount[]', $mat->material_amount, array('class' => 'input is-small', 'readonly' => true))); ?>
+
                                     </div>
                                     <div class="column is-5">
-                                        {{ Html::label('material_note', 'Note', array('class' => 'label')) }}
-                                        {{ Html::input('text', 'material_note[]', $mat->material_note, array('class' => 'input is-small', 'readonly' => true)) }}
+                                        <?php echo e(Html::label('material_note', 'Note', array('class' => 'label'))); ?>
+
+                                        <?php echo e(Html::input('text', 'material_note[]', $mat->material_note, array('class' => 'input is-small', 'readonly' => true))); ?>
+
                                     </div>
                                 </div>
-                            @endforeach
-                        @endif
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endif; ?>
                     </fieldset>
 
                     <!-- End Material -->
@@ -278,17 +297,21 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('da_amount', 'DA Amount', array('class' => 'label')) }}
+                                <?php echo e(Html::label('da_amount', 'DA Amount', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('number', 'da_amount', !empty($da) ? $da->da_amount : '', ['class' => 'input is-small requisition_rent_id',  'placeholder' => 'Enter DA amount...', 'min' => '0']) }}
+                                    <?php echo e(Html::input('number', 'da_amount', !empty($da) ? $da->da_amount : '', ['class' => 'input is-small requisition_rent_id',  'placeholder' => 'Enter DA amount...', 'min' => '0'])); ?>
+
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('da_notes', 'DA Note', array('class' => 'label')) }}
+                                <?php echo e(Html::label('da_notes', 'DA Note', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('text', 'da_notes', !empty($da) ? $da->da_notes : '', ['class' => 'input is-small' , 'placeholder' => 'Enter DA notes...']) }}
+                                    <?php echo e(Html::input('text', 'da_notes', !empty($da) ? $da->da_notes : '', ['class' => 'input is-small' , 'placeholder' => 'Enter DA notes...'])); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -296,17 +319,21 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('labour_amount', 'Labour Amount', array('class' => 'label')) }}
+                                <?php echo e(Html::label('labour_amount', 'Labour Amount', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('number', 'labour_amount', !empty($labour) ? $labour->labour_amount : '', ['required', 'class' => 'input is-small requisition_rent_id', 'placeholder' => 'Enter labour amount...', 'v-model' => 'labour_amount']) }}
+                                    <?php echo e(Html::input('number', 'labour_amount', !empty($labour) ? $labour->labour_amount : '', ['required', 'class' => 'input is-small requisition_rent_id', 'placeholder' => 'Enter labour amount...', 'v-model' => 'labour_amount'])); ?>
+
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('labour_notes', 'Labour Note', array('class' => 'label')) }}
+                                <?php echo e(Html::label('labour_notes', 'Labour Note', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('text', 'labour_notes', !empty($labour) ? $labour->labour_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter DA notes...']) }}
+                                    <?php echo e(Html::input('text', 'labour_notes', !empty($labour) ? $labour->labour_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter DA notes...'])); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -316,17 +343,21 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('other_amount', 'Other Amount', array('class' => 'label')) }}
+                                <?php echo e(Html::label('other_amount', 'Other Amount', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('number', 'other_amount', !empty($other) ? $other->other_amount : '', ['required', 'class' => 'input is-small requisition_rent_id', 'placeholder' => 'Enter other amount...', 'v-model' => 'other_amount']) }}
+                                    <?php echo e(Html::input('number', 'other_amount', !empty($other) ? $other->other_amount : '', ['required', 'class' => 'input is-small requisition_rent_id', 'placeholder' => 'Enter other amount...', 'v-model' => 'other_amount'])); ?>
+
                                 </div>
                             </div>
                         </div>
                         <div class="column">
                             <div class="field">
-                                {{ Html::label('other_notes', 'Other Note', array('class' => 'label')) }}
+                                <?php echo e(Html::label('other_notes', 'Other Note', array('class' => 'label'))); ?>
+
                                 <div class="control">
-                                    {{ Html::input('text', 'other_notes', !empty($other) ? $other->other_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other notes...']) }}
+                                    <?php echo e(Html::input('text', 'other_notes', !empty($other) ? $other->other_notes : '', ['required', 'class' => 'input is-small', 'placeholder' => 'Enter other notes...'])); ?>
+
                                 </div>
                             </div>
                         </div>
@@ -336,28 +367,28 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <strong>Transport Allowances Breakdown</strong>
-                            @if(!empty($task_transport_breakdown))
+                            <?php if(!empty($task_transport_breakdown)): ?>
                                 <a style="float: right">
                                             <span style="cursor: pointer;" class="tag is-normal is-success"
                                                   id="addrowTa">Add &nbsp; <strong>+</strong></span>
                                 </a>
-                            @endif
+                            <?php endif; ?>
                         </div>
                         <div class="block">
                         </div>
                     </div>
                     <div id="ta_wrap">
-                        @php $ta_count = 0; @endphp
-                        @if(!empty($task_transport_breakdown))
-                            @foreach($task_transport_breakdown as $key => $item)
+                        <?php $ta_count = 0; ?>
+                        <?php if(!empty($task_transport_breakdown)): ?>
+                            <?php $__currentLoopData = $task_transport_breakdown; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="columns">
                                     <div class="column is-1">
                                         <div class="block" style="margin-top: 3px;">
                                         </div>
                                     </div>
                                     <div class="column is-3">
-                                        <input type="text" name="transport[{{$ta_count = $key}}][where_to_where]"
-                                               class="where_to_where input is-small" value="{{$item->where_to_where}}" required/>
+                                        <input type="text" name="transport[<?php echo e($ta_count = $key); ?>][where_to_where]"
+                                               class="where_to_where input is-small" value="<?php echo e($item->where_to_where); ?>" required/>
                                     </div>
                                     <div class="column is-2">
                                         <div class="control">
@@ -367,29 +398,29 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                                     'Bus', 'Rickshaw', 'CNG', 'Taxi', 'Auto', 'Tempo', 'Van', 'Train', 'Boat', 'Other'
                                                 ];
                                                 ?>
-                                                <select name="transport[{{$ta_count = $key}}][transport_type]" required>
+                                                <select name="transport[<?php echo e($ta_count = $key); ?>][transport_type]" required>
                                                     <option value="">Select Transport Type</option>
-                                                    @foreach($transports as $transport)
+                                                    <?php $__currentLoopData = $transports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $transport): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <option
-                                                            value="{{ $transport }}" {{$item->transport_type == $transport ? 'selected' : ''}}>{{ $transport }}</option>
-                                                    @endforeach
+                                                            value="<?php echo e($transport); ?>" <?php echo e($item->transport_type == $transport ? 'selected' : ''); ?>><?php echo e($transport); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="column is-2">
-                                        <input class="input is-small requisition_rent_id" name="transport[{{$ta_count = $key}}][ta_amount]"
+                                        <input class="input is-small requisition_rent_id" name="transport[<?php echo e($ta_count = $key); ?>][ta_amount]"
                                                type="number" min="0"
-                                               step=".01" value="{{$item->ta_amount}}" required/>
+                                               step=".01" value="<?php echo e($item->ta_amount); ?>" required/>
                                     </div>
                                     <div class="column">
-                                        <input class="input is-small" name="transport[{{$ta_count = $key}}][ta_note]"
+                                        <input class="input is-small" name="transport[<?php echo e($ta_count = $key); ?>][ta_note]"
                                                type="text"
-                                               value="{{$item->ta_note}}" required/>
+                                               value="<?php echo e($item->ta_note); ?>" required/>
                                     </div>
                                 </div>
-                            @endforeach
-                        @else
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php else: ?>
                             <div class="columns">
                                 <div class="column is-1">
                                     <div class="block" style="margin-top: 3px;">
@@ -414,9 +445,9 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                             ?>
                                             <select name="transport[0][transport_type]" required>
                                                 <option>Select Transport Type</option>
-                                                @foreach($transports as $transport)
-                                                    <option value="{{ $transport }}">{{ $transport }}</option>
-                                                @endforeach
+                                                <?php $__currentLoopData = $transports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $transport): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($transport); ?>"><?php echo e($transport); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
                                     </div>
@@ -430,7 +461,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                            placeholder="TA Note" required/>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     <!-- End Transport -->
                     <br/>
@@ -438,39 +469,39 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     <div class="columns">
                         <div class="column">
                             <strong>Purchase Breakdown</strong>
-                            @if(!empty($task_purchase_breakdown))
+                            <?php if(!empty($task_purchase_breakdown)): ?>
                                 <a style="float: right">
                                             <span style="cursor: pointer;" class="tag is-success"
                                                   id="addrowPa">Add &nbsp; <strong>+</strong></span>
                                 </a>
-                            @endif
+                            <?php endif; ?>
                         </div>
                         <div class="block">
                         </div>
                     </div>
                     <div id="pa_wrap">
-                        @php $pa_count = 0; @endphp
-                        @if(!empty($task_purchase_breakdown))
-                            @foreach($task_purchase_breakdown as $key => $item)
+                        <?php $pa_count = 0; ?>
+                        <?php if(!empty($task_purchase_breakdown)): ?>
+                            <?php $__currentLoopData = $task_purchase_breakdown; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="columns">
                                     <div class="column is-1">
                                         <div class="block" style="margin-top: 3px;">                                            
                                         </div>
                                     </div>
                                     <div class="column is-2">
-                                        <input class="input is-small requisition_rent_id" name="purchase[{{$pa_count = $key}}][pa_amount]"
+                                        <input class="input is-small requisition_rent_id" name="purchase[<?php echo e($pa_count = $key); ?>][pa_amount]"
                                                type="number" min="0"
                                                step=".01"
-                                               value="{{$item->pa_amount}}" required/>
+                                               value="<?php echo e($item->pa_amount); ?>" required/>
                                     </div>
                                     <div class="column">
-                                        <input class="input is-small" name="purchase[{{$pa_count = $key}}][pa_note]"
+                                        <input class="input is-small" name="purchase[<?php echo e($pa_count = $key); ?>][pa_note]"
                                                type="text"
-                                               value="{{$item->pa_note}}" required/>
+                                               value="<?php echo e($item->pa_note); ?>" required/>
                                     </div>
                                 </div>
-                            @endforeach
-                        @else
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php else: ?>
                             <div class="columns">
                                 <div class="column is-1">
                                     <div class="block" style="margin-top: 3px;">
@@ -490,7 +521,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                                            placeholder="PA Note" required/>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     <!-- End Purchase -->
                 </div>
@@ -504,21 +535,22 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                     </div>
                 </div>
             </div>
-            {{ Html::form()->close() }}
+            <?php echo e(Html::form()->close()); ?>
+
         </div>
     </article>
 	<?php } ?>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
-    @php
+<?php $__env->startSection('column_right'); ?>
+    <?php
         $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
-    @endphp
-    @include('task::task_status_sidebar')
-@endsection
+    ?>
+    <?php echo $__env->make('task::task_status_sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@endif
-@section('cusjs')
+<?php endif; ?>
+<?php $__env->startSection('cusjs'); ?>
 
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"
@@ -549,9 +581,9 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
                         ?>
                         <select name="" class="transport_type" required>
                             <option>Select Transport Type</option>
-                            @foreach($transports as $transport)
-                                <option value="{{ $transport }}">{{ $transport }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $transports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $transport): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($transport); ?>"><?php echo e($transport); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
                 </div>
@@ -590,8 +622,8 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
     <script>
         //Add Row Function
         $(document).ready(function () {
-            var ta_counter = '{{$ta_count +1}}';
-            var pa_counter = '{{$pa_count + 1}}';
+            var ta_counter = '<?php echo e($ta_count +1); ?>';
+            var pa_counter = '<?php echo e($pa_count + 1); ?>';
             //Transport
             $("#addrowTa").on("click", function () {
                 var cols = '<div class="ta' + ta_counter + '">';
@@ -662,5 +694,7 @@ $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/taskrequisitionbill/create.blade.php ENDPATH**/ ?>

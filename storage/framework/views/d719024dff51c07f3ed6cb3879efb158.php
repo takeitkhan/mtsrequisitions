@@ -1,48 +1,47 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Include material information of task
-@endsection
-@php
+<?php $__env->stopSection(); ?>
+<?php
     $task_id = request()->get('task_id');
     $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
-@endphp      
+?>      
 
-@php
+<?php
     $remaining_balance = \Tritiyo\Project\Helpers\ProjectHelper::remainingBalance($task->project_id, $task->current_range_id);
     $today_use = \Tritiyo\Task\Helpers\RequisitionData::todayManagerUsedAmount($task->project_id, $task->current_range_id);
     $of95 = $remaining_balance - $today_use;
-@endphp
+?>
 
 <div style="display: none;">
-        <input type="text" value="{{ $of95 }}" id="of95" />
+        <input type="text" value="<?php echo e($of95); ?>" id="of95" />
 </div>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'Material',
             'spSubTitle' => 'Add a metarial of task',
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
             'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
     <article class="panel is-primary" id="app">
         <a style="float: right; display: block">
             <span style="cursor: pointer;" class="tag is-success" id="addrow">
@@ -50,7 +49,7 @@
             </span>
         </a>
 
-        @include('task::layouts.tab')
+        <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         <div class="customContainer">
             <?php
             if (!empty($task_id) && $task_id) {
@@ -61,7 +60,7 @@
                 $method = 'post';
             } ?>
 
-            {!! Html::form()
+            <?php echo Html::form()
                 ->attribute('action', $routeUrl)
                 ->method($method)
                 ->attribute('value', 'PATCH')
@@ -69,50 +68,59 @@
                 ->attribute('class', 'task_material_table')
                 ->acceptsFiles()
                 ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}
+                ->open(); ?>
 
-            @if($task_id)
-                {{ Html::hidden('task_id', $task_id ?? '') }}
-            @endif
-            @if(!empty($taskId))
-                {{ Html::hidden('tassk_id', $taskId ?? '') }}
-            @endif
 
-            @php
+            <?php if($task_id): ?>
+                <?php echo e(Html::hidden('task_id', $task_id ?? '')); ?>
+
+            <?php endif; ?>
+            <?php if(!empty($taskId)): ?>
+                <?php echo e(Html::hidden('tassk_id', $taskId ?? '')); ?>
+
+            <?php endif; ?>
+
+            <?php
                 $materials = \Tritiyo\Material\Models\Material::get();
                 $getTaskMaterial = \Tritiyo\Task\Models\TaskMaterial::where('task_id', $task_id)->get()
-            @endphp
+            ?>
             <div id="myTable">
-            @if(count( $getTaskMaterial) > 0)
-                @foreach( $getTaskMaterial as $mat)
-                    <div class="columns s{{$mat->id}}">
+            <?php if(count( $getTaskMaterial) > 0): ?>
+                <?php $__currentLoopData = $getTaskMaterial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="columns s<?php echo e($mat->id); ?>">
                             <div class="column is-2">
                                 <div class="field">
-                                    {{ Html::label('material_id', 'Material', array('class' => 'label')) }}
+                                    <?php echo e(Html::label('material_id', 'Material', array('class' => 'label'))); ?>
+
                                     <div class="control">
                                         <select name="material_id[]" id="material_select" class="input" required>
                                             <option value="">Select Material</option>
-                                            @foreach($materials as $material)
+                                            <?php $__currentLoopData = $materials; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $material): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option
-                                                    value="{{$material->id}}" {{ $mat->material_id == $material->id ? 'selected' : '' }} >{{$material->name}}</option>
-                                            @endforeach
+                                                    value="<?php echo e($material->id); ?>" <?php echo e($mat->material_id == $material->id ? 'selected' : ''); ?> ><?php echo e($material->name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="column is-2">
-                                {{ Html::label('material_qty', 'Material Qty', array('class' => 'label')) }}
-                                {{ Html::input('number', 'material_qty[]', $mat->material_qty, array('class' => 'input is-small')) }}
+                                <?php echo e(Html::label('material_qty', 'Material Qty', array('class' => 'label'))); ?>
+
+                                <?php echo e(Html::input('number', 'material_qty[]', $mat->material_qty, array('class' => 'input is-small'))); ?>
+
                             </div>
 
                             <div class="column is-2">
-                                {{ Html::label('material_amount', 'Amount', array('class' => 'label')) }}
-                                {{ Html::input('number', 'material_amount[]', $mat->material_amount, array('class' => 'input is-small')) }}
+                                <?php echo e(Html::label('material_amount', 'Amount', array('class' => 'label'))); ?>
+
+                                <?php echo e(Html::input('number', 'material_amount[]', $mat->material_amount, array('class' => 'input is-small'))); ?>
+
                             </div>
                             <div class="column is-5">
-                                {{ Html::label('material_note', 'Note', array('class' => 'label')) }}
-                                {{ Html::input('text', 'material_note[]', $mat->material_note, array('class' => 'input is-small')) }}
+                                <?php echo e(Html::label('material_note', 'Note', array('class' => 'label'))); ?>
+
+                                <?php echo e(Html::input('text', 'material_note[]', $mat->material_note, array('class' => 'input is-small'))); ?>
+
                             </div>
 
                             <div class="column is-1">
@@ -121,16 +129,16 @@
                             </div>
 
                         </div>
-                @endforeach
-            @else
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php else: ?>
                     <div class="columns">
                         <div class="column is-2">
                             <label for="material_id" class="label">Material</label>
                             <select name="material_id[]" id="material_select" class="input is-small" required>
                                 <option></option>
-                                @foreach($materials as $material)
-                                    <option value="{{$material->id}}">{{$material->name }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $materials; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $material): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($material->id); ?>"><?php echo e($material->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="column is-2">
@@ -151,7 +159,7 @@
                         </div>
                     </div>
 
-            @endif
+            <?php endif; ?>
             </div>
 
             <div class="columns">
@@ -163,22 +171,23 @@
                     </div>
                 </div>
             </div>
-            {!! Html::form()->close() !!}
+            <?php echo Html::form()->close(); ?>
+
         </div>
     </article>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
-    @php
+<?php $__env->startSection('column_right'); ?>
+    <?php
         //$task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
-    @endphp
-    @include('task::task_status_sidebar')
+    ?>
+    <?php echo $__env->make('task::task_status_sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
 
 
-@section('cusjs')
+<?php $__env->startSection('cusjs'); ?>
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
         //Add Row Function
@@ -250,7 +259,7 @@
 
     </script>
 
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>--}}
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
@@ -267,5 +276,7 @@
     </script>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/taskmaterial/create.blade.php ENDPATH**/ ?>

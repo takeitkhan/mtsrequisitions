@@ -1,34 +1,33 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Include Anonymous Proof information of task
-@endsection
+<?php $__env->stopSection(); ?>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'Vehicle',
             'spSubTitle' => 'Add Anonymous Proof of task',
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
             'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
     <article class="panel is-primary" id="app">
 
         <?php
@@ -36,40 +35,40 @@
         $task_id = request()->get('task_id');
         ?>
 
-        @include('task::layouts.tab')
+        <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 
         <div class="customContainer">
 
-            {!! Html::form()
+            <?php echo Html::form()
                 ->attribute('action', route('tasks.update', $task_id))
                 ->method('PUT')
                 ->attribute('id', 'add_route')
                 ->acceptsFiles()
                 ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}
+                ->open(); ?>
+
             
             <div class="columns">
                 <div class="column is-9">
                     <div class="field">
                         <label for="task_details" class="label">Task Anonymous Proof Details</label>
                         <div class="control">
-                            @if(auth()->user()->isManager(auth()->user()->id))
-                                @php
+                            <?php if(auth()->user()->isManager(auth()->user()->id)): ?>
+                                <?php
                                     $disabled = '';
-                                @endphp
-                            @endif
+                                ?>
+                            <?php endif; ?>
                             <input type="hidden" name="anonymousproof_details" value="anonymousproof_details">
                             <textarea  class="textarea" rows="5" placeholder="Enter Task Anonymous Proof Details..."
                                       name="anonymous_proof_details" cols="50"
-                                      id="anonymous_proof_details" {{ $disabled }}>{{$task->anonymous_proof_details}}</textarea>
+                                      id="anonymous_proof_details" <?php echo e($disabled); ?>><?php echo e($task->anonymous_proof_details); ?></textarea>
                         </div>
                     </div>
                 </div>
             </div>
 
-            @if(auth()->user()->isManager(auth()->user()->id))
+            <?php if(auth()->user()->isManager(auth()->user()->id)): ?>
                 <div class="columns">
                     <div class="column">
                         <div class="field is-grouped">
@@ -79,22 +78,25 @@
                         </div>
                     </div>
                 </div>
-            @else
+            <?php else: ?>
 
-            @endif
-            {!! Html::form()->close() !!}
+            <?php endif; ?>
+            <?php echo Html::form()->close(); ?>
+
         </div>
     </article>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
-    @php
+<?php $__env->startSection('column_right'); ?>
+    <?php
         $task = \Tritiyo\Task\Models\Task::where('id', $task_id)->first();
-    @endphp
-    @include('task::task_status_sidebar')
-@endsection
-@section('cusjs')
+    ?>
+    <?php echo $__env->make('task::task_status_sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('cusjs'); ?>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/taskanonymousproof/create.blade.php ENDPATH**/ ?>

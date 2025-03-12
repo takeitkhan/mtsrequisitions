@@ -1,34 +1,33 @@
-@extends('layouts.app')
-@section('title')
+<?php $__env->startSection('title'); ?>
     Include site information for task
-@endsection
+<?php $__env->stopSection(); ?>
 
 <section class="hero is-white borderBtmLight">
     <nav class="level">
-        @include('component.title_set', [
+        <?php echo $__env->make('component.title_set', [
             'spTitle' => 'include Site Of Task',
             'spSubTitle' => 'Add a Site of task',
             'spShowTitleSet' => true
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.button_set', [
+        <?php echo $__env->make('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
             'spTitle' => 'Tasks',
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        @include('component.filter_set', [
+        <?php echo $__env->make('component.filter_set', [
             'spShowFilterSet' => true,
             'spPlaceholder' => 'Search tasks...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
-        ])
+        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
     </nav>
 </section>
-@section('column_left')
+<?php $__env->startSection('column_left'); ?>
     <article class="panel is-primary" id="app">
         <?php
         $task_id = request()->get('task_id');
@@ -38,7 +37,7 @@
         //$taskId = !empty($task_id) ?? $task_id;
         ?>
 
-        @include('task::layouts.tab')
+        <?php echo $__env->make('task::layouts.tab', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <div class="customContainer">
             <?php
@@ -54,32 +53,35 @@
                 }
             ?>
 
-            {!! Html::form()
+            <?php echo Html::form()
                 ->attribute('action', $routeUrl)
                 ->method($method)
                 ->attribute('id', 'add_route')
                 ->attribute('class', 'task_site_table')
                 ->acceptsFiles()
                 ->attribute('autocomplete', 'off')
-                ->open() 
-            !!}
+                ->open(); ?>
 
-            @if($task_id)
-            {!! Html::hidden('task_id', $task_id ?? '') !!}
-            @endif
-            @if(!empty($taskId))
-            {!! Html::hidden('task_id', $taskId ?? '') !!}
-            @endif
+
+            <?php if($task_id): ?>
+            <?php echo Html::hidden('task_id', $task_id ?? ''); ?>
+
+            <?php endif; ?>
+            <?php if(!empty($taskId)): ?>
+            <?php echo Html::hidden('task_id', $taskId ?? ''); ?>
+
+            <?php endif; ?>
 
             <div class="columns">
                 <div class="column is-6">
 
                     <div class="field">
 
-                        {{ Html::label('site_id', 'Sites', array('class' => 'label')) }}
+                        <?php echo e(Html::label('site_id', 'Sites', array('class' => 'label'))); ?>
+
                         <div class="control">
                             <div dclass="select is-multiple">
-                                @php
+                                <?php
                                     $projectId = \Tritiyo\Task\Models\Task::where('id', $task_id)->first()->project_id;
 
                                   $sites = \Tritiyo\Site\Models\Site::where('project_id', $projectId)
@@ -88,19 +90,20 @@
                                                         ->orWhere('completion_status',  'Running');
                                                         })
                                                         ->get();
-                                @endphp
+                                ?>
                                 <select id="site_select" multiple="multiple" name="site_id[]" class="input" required>
-                                    @foreach($sites as $site)
-                                        <option id="site{{$site->id}}" value="{{$site->id}}" data-result="{{$site->id}}"
+                                    <?php $__currentLoopData = $sites; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $site): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option id="site<?php echo e($site->id); ?>" value="<?php echo e($site->id); ?>" data-result="<?php echo e($site->id); ?>"
 
-                                        @if(isset($taskSites))
-                                            @foreach($taskSites as $data)
-                                                {{$data->site_id == $site->id ? 'selected' : ''}}
-                                                @endforeach
-                                            @endif
+                                        <?php if(isset($taskSites)): ?>
+                                            <?php $__currentLoopData = $taskSites; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php echo e($data->site_id == $site->id ? 'selected' : ''); ?>
 
-                                        >{{ $site->site_code }}</option>
-                                    @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+
+                                        ><?php echo e($site->site_code); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -108,11 +111,12 @@
                 </div>
                 <div class="column is-6">
                     <div class="field">
-                        {{ Html::label('resource_id', 'Site Resources', array('class' => 'label')) }}
+                        <?php echo e(Html::label('resource_id', 'Site Resources', array('class' => 'label'))); ?>
+
                         <div class="control">
                             <div sclass="select is-multiple">
 
-                                @php
+                                <?php
                                     $task_type = \Tritiyo\Task\Models\Task::where('id', $task_id)->first()->task_type;
                                     if($task_type == 'emergency') {
                                         $date = date('Y-m-d');
@@ -128,38 +132,41 @@
                                                 users.id AS useriddddd
                                         FROM users WHERE users.role = 2 AND users.employee_status  NOT IN ( 'Terminated', 'Left Job', 'Long Leave', 'On Hold')
                                     ) AS mm WHERE mm.site_head IS NULL AND mm.resource_used IS NULL ORDER BY id ASC");
-                                @endphp
+                                ?>
                                 <select id="resource_select" multiple="multiple" name="resource_id[]" class="input" required>
                                     <option value="2" data-resultx="No">None</option>
-                                    @php
+                                    <?php
                                         $all_resources = \Tritiyo\Task\Models\TaskSite::where('task_id', $task_id)->groupBy('resource_id')->get();
-                                    @endphp
+                                    ?>
 
 
-                                    @foreach($all_resources as $resource)
-                                        @php
+                                    <?php $__currentLoopData = $all_resources; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $resource): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
                                             $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
-                                        @endphp
-                                        <option value="{{$resource->resource_id}}"
-                                                data-result="{{ $count_result ?? NULL }}" selected>
-                                            {{ \App\Models\User::where('id', $resource->resource_id)->first()->name ?? NULL }}
+                                        ?>
+                                        <option value="<?php echo e($resource->resource_id); ?>"
+                                                data-result="<?php echo e($count_result ?? NULL); ?>" selected>
+                                            <?php echo e(\App\Models\User::where('id', $resource->resource_id)->first()->name ?? NULL); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
-                                    @foreach($resources as $resource)
-                                        @php
+                                    <?php $__currentLoopData = $resources; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $resource): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
                                             $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
-                                        @endphp
-                                        <option value="{{$resource->id}}" data-resultx="{{ $count_result ?? NULL }}"
-                                        @if(isset($taskSites))
-                                            @foreach($taskSites as $data)
-                                                {{$data->resource_id == $resource->id ? 'selected' : ''}}
-                                                @endforeach
-                                            @endif >
-                                            {{ $resource->name }}
+                                        ?>
+                                        <option value="<?php echo e($resource->id); ?>" data-resultx="<?php echo e($count_result ?? NULL); ?>"
+                                        <?php if(isset($taskSites)): ?>
+                                            <?php $__currentLoopData = $taskSites; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php echo e($data->resource_id == $resource->id ? 'selected' : ''); ?>
+
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?> >
+                                            <?php echo e($resource->name); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
 
                             </div>
@@ -176,25 +183,26 @@
                     </div>
                 </div>
             </div>
-            {!! Html::form()->close() !!}
+            <?php echo Html::form()->close(); ?>
+
         </div>
     </article>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('column_right')
-    @php
+<?php $__env->startSection('column_right'); ?>
+    <?php
         $task = \Tritiyo\Task\Models\Task::where('id', $taskId)->first();
-    @endphp
-    @include('task::task_status_sidebar')
-@endsection
+    ?>
+    <?php echo $__env->make('task::task_status_sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopSection(); ?>
 
 
-@section('cusjs')
+<?php $__env->startSection('cusjs'); ?>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    {{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--}}
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
@@ -231,7 +239,7 @@
                     let name = value.data.text;
                     $.ajax({
                         type: "GET",
-                        url: "{{route('project.check.resource.pending.bills', '')}}/" + resourceId,
+                        url: "<?php echo e(route('project.check.resource.pending.bills', '')); ?>/" + resourceId,
                         success: function (data) {
                             if (data == 'Yes') {
                                 //console.log(value.data.text);
@@ -261,7 +269,7 @@
             console.log(siteId);
             $.ajax({
                 type: "GET",
-                url: "{{route('project.check.limit.site', '')}}/" + siteId,
+                url: "<?php echo e(route('project.check.limit.site', '')); ?>/" + siteId,
                 success: function (data) {
                     if (data == 'false') {
                         console.log(data);
@@ -281,4 +289,6 @@
         })
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\oldwindows\laragon\www\mtsrequisitions\vendor\tritiyo\task\src/views/tasksite/create.blade.php ENDPATH**/ ?>
