@@ -177,22 +177,6 @@ $inserted = \App\Models\Attack::insertOrUpdate($match, $arr);
     </style>
     <?php echo $__env->yieldContent('cusjs'); ?>
     <?php echo $__env->yieldContent('cus_js'); ?>
-    <!-- Select2 CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
-
-    <!-- Select2 JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-    <script>
-        jQuery(document).ready(function ($) {
-            $.noConflict();
-            // Ensure Select2 is initialized after jQuery
-            $.fn.select2.defaults.set("theme", "bootstrap");
-
-            // Initialize Select2
-            $('#project_select').select2();
-        });
-    </script>
     <link rel="stylesheet" type="text/css" href="<?php echo e(asset('public/css/form.css') . '?' . rand(0, 999)); ?>" />
 </body>
 
