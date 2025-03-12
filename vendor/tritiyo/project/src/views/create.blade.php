@@ -2,7 +2,15 @@
 @section('title')
     Create Project
 @endsection
-
+@if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+    @php
+        $addUrl = route('projects.create');
+    @endphp
+@else
+    @php
+        $addUrl = '#';
+    @endphp
+@endif
 <section class="hero is-white borderBtmLight">
     <nav class="level">
         @include('component.title_set', [
@@ -14,13 +22,17 @@
         @include('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
-            'spAddUrl' => route('projects.create'),
+            'spAddUrl' => $addUrl,
             'spAllData' => route('projects.index'),
             'spSearchData' => route('projects.search'),
+            'spTitle' => 'Projects',
         ])
 
         @include('component.filter_set', [
             'spShowFilterSet' => true,
+            'spAddUrl' => route('projects.create'),
+            'spAllData' => route('projects.index'),
+            'spSearchData' => route('projects.search'),
             'spPlaceholder' => 'Search projects...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
@@ -56,17 +68,23 @@
                     <div class="field">
                         {{ Form::label('type', 'Project Type', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('type', $project->type ?? NULL, ['class' => 'input', 'placeholder' => 'Enter project type...']) }}
+                            <select class="input is-small" name="type" id="">
+                                <option value="">Select a project type</option>
+                                <option value="Recurring" >Recurring</option>
+                                <option value="Not Recurring">Not Recurring</option>
+                            </select>
                         </div>
                     </div>
                 </div>
+
             </div>
+
             <div class="columns">
                 <div class="column is-9">
                     <div class="field">
                         {{ Form::label('manager', 'Project Manager', array('class' => 'label')) }}
                         <div class="control">
-                            <?php $managers = \App\Models\User::where('role', 3)->pluck('name', 'id')->prepend('Select manager', ''); ?>
+                            <?php $managers = \App\Models\User::where('role', 3)->whereNotIn('employee_status', ['Left Job', 'Terminated'])->pluck('name', 'id')->prepend('Select manager', ''); ?>
                             {{ Form::select('manager', $managers, $project->manager ?? NULL, ['class' => 'input']) }}
                         </div>
                     </div>
@@ -143,11 +161,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-3">
+                <div class="column is-3" style="display:none;">
                     <div class="field">
                         {{ Form::label('budget', 'Project approximate budget', array('class' => 'label')) }}
                         <div class="control">
-                            {{ Form::text('budget', $project->budget ?? NULL, ['required', 'class' => 'input', 'placeholder' => 'Enter project budget...']) }}
+                            {{ Form::text('budget', $project->budget ?? NULL,[ 'class' => 'input', 'placeholder' => 'Enter project budget...']) }}
                         </div>
                     </div>
                 </div>
@@ -166,14 +184,19 @@
                 <div class="column">
                     <div class="field is-grouped">
                         <div class="control">
-                            <button class="button is-success is-small">Save Changes</button>
+                            <button class="button is-success is-small" type="submit">Save Changes</button>
                         </div>
                     </div>
                 </div>
             </div>
             {{ Form::close() }}
         </div>
+
+
     </article>
+
+
+
 @endsection
 
 @section('column_right')

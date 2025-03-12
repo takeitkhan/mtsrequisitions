@@ -12,6 +12,6 @@ class TaskSite extends Model
     protected $table = 'tasks_site';
     public $timestamps = true;
     protected $fillable = [
-        'task_id', 'site_id', 'resource_id'
+        'task_id', 'site_id', 'resource_id', 'task_type', 'task_for'
     ];
 }

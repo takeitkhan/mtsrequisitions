@@ -97,7 +97,7 @@
                                                     <?php $link = '#'; ?>
                                                 @else
                                                     <?php
-                                                    $link = route($menu->route_url) . '?route_id=' . $menu->id;
+                                                        $link = route($menu->route_url) . '?route_id=' . $menu->id;
                                                     ?>
                                                 @endif
                                             @endif
@@ -120,100 +120,3 @@
         </div>
     </section>
 @endsection
-
-
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-warning is-large is-accent">--}}
-{{--            <span><i class="fas fa-chart-bar"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Sales</div>--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-link is-large is-accent">--}}
-{{--            <span><i class="fas fa-project-diagram"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Projects</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-danger is-large is-accent">--}}
-{{--            <span><i class="fas fa-cart-plus"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Point of Sale</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-primary is-large is-accent">--}}
-{{--            <span><i class="fas fa-calculator"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Accounting</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-info is-large is-accent">--}}
-{{--            <span><i class="fas fa-coins"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Expenses</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a href="{{ route('users.index') }}" class="button is-success is-large is-accent">--}}
-{{--            <span><i class="fas fa-users"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Users</div>--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-warning is-large is-accent">--}}
-{{--            <span><i class="fas fa-chart-bar"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Sales</div>--}}
-{{--    </div>--}}
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-link is-large is-accent">--}}
-{{--            <span><i class="fas fa-project-diagram"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Projects</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-danger is-large is-accent">--}}
-{{--            <span><i class="fas fa-cart-plus"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Point of Sale</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-primary is-large is-accent">--}}
-{{--            <span><i class="fas fa-calculator"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Accounting</div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-{{--<div class="column is-2">--}}
-{{--    <div class="isCentered">--}}
-{{--        <a class="button is-info is-large is-accent">--}}
-{{--            <span><i class="fas fa-coins"></i></span>--}}
-{{--        </a>--}}
-{{--        <div class="o_caption">Expenses</div>--}}
-{{--    </div>--}}
-{{--</div>--}}

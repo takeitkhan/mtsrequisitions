@@ -2,7 +2,15 @@
 @section('title')
     Create Vehicle
 @endsection
-
+@if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+    @php
+        $addUrl = route('vehicles.create');
+    @endphp
+@else
+    @php
+        $addUrl = '#';
+    @endphp
+@endif
 <section class="hero is-white borderBtmLight">
     <nav class="level">
         @include('component.title_set', [
@@ -14,13 +22,17 @@
         @include('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
-            'spAddUrl' => route('vehicles.create'),
+            'spAddUrl' => $addUrl,
             'spAllData' => route('vehicles.index'),
             'spSearchData' => route('vehicles.search'),
+            'spTitle' => 'Vehicles',
         ])
 
         @include('component.filter_set', [
             'spShowFilterSet' => true,
+            'spAddUrl' => route('vehicles.create'),
+            'spAllData' => route('vehicles.index'),
+            'spSearchData' => route('vehicles.search'),
             'spPlaceholder' => 'Search vehicles...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
@@ -78,7 +90,7 @@
 @endsection
 
 @section('column_right')
-    <article class="is-primary">
+    <!-- <article class="is-primary">
         <div class="box">
             <h1 class="title is-5">Important Note</h1>
             <p>
@@ -93,5 +105,5 @@
                 update the information for your user.
             </p>
         </div>
-    </article>
+    </article> -->
 @endsection

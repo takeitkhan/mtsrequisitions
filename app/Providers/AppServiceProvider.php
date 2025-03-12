@@ -3,26 +3,14 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Spatie\Html\Html;
+use Spatie\Html\HtmlServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
     public function register()
     {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
+        // Register Spatie's HTML service provider explicitly (optional in Laravel 5.5+)
+        $this->app->register(HtmlServiceProvider::class);
     }
 }

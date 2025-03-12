@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class Role
 {
@@ -19,7 +18,8 @@ class Role
     {
         $user = $request->user();
         if ($user != null) {
-            if ($user->isAdmin($request->user()->id))
+            
+            if ($user->isAdmin($request->user()->id))            
                 return $next($request);
 
             foreach ($roles as $role) {

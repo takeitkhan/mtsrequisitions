@@ -3,6 +3,8 @@
 namespace Tritiyo\Task\Controllers;
 
 use Tritiyo\Task\Helpers\TaskHelper;
+use Tritiyo\Task\Models\Task;
+use Tritiyo\Site\Models\Site;
 use Tritiyo\Task\Models\TaskSite;
 use Tritiyo\Task\Repositories\TaskSiteInterface;
 use App\Http\Controllers\Controller;
@@ -54,7 +56,7 @@ class TaskSiteController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+        // Not in action
         $validator = Validator::make($request->all(),
             [
                 'task_id' => 'required',
@@ -69,38 +71,6 @@ class TaskSiteController extends Controller
                 ->withInput();
         } else {
 
-
-            // store
-            $attributes = [
-                'task_id' => $request->task_id,
-                'site_id' => $request->site_id,
-                'resource_id' => $request->resource_id
-            ];
-
-            //dd($request->resource_id);
-
-            $arr = array();
-
-            foreach ($request->site_id as $key => $row) {
-                foreach ($request->resource_id as $k => $r) {
-                    $arr['task_id'] = $request->task_id;
-                    $arr['site_id'] = $row;
-                    $arr['resource_id'] = $r;
-                    $arr['created_at'] = now();
-                    $arr['updated_at'] = now();
-                    $tasksite = $this->tasksite->create($arr);
-                }
-            }
-
-
-            try {
-                //  $tasksite = $this->tasksite->create($arr);
-                //return view('task::create', ['task' => $tasksite]);
-
-                return redirect(route('tasks.index'))->with(['status' => 1, 'message' => 'Successfully created']);
-            } catch (\Exception $e) {
-                return view('task::create')->with(['status' => 0, 'message' => 'Error']);
-            }
         }
     }
 
@@ -135,6 +105,28 @@ class TaskSiteController extends Controller
      */
     public function update(Request $request)
     {
+
+        //wwwwwwwdd($request->site_id);
+        foreach($request->site_id as $site) {
+            //$count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($reqource_id);
+        }
+
+        foreach($request->resource_id as $resource_id) {
+            $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource_id);
+        }
+        /**
+         * if manager edited any data during requisition after approver data
+         * action delete this approver approved status from tasksstatus table
+         */
+        if (auth()->user()->isManager(auth()->user()->id)) {
+            $task_id = $request->task_id;
+
+            if(Task::where('id', $task_id)->first()->manager_override_chunck == null){
+                TaskHelper::ManagerOverrideData($task_id);
+            }
+        }
+        //End
+
         if (auth()->user()->isApprover(auth()->user()->id)) {
             TaskHelper::statusUpdateOrInsert([
                 'code' => TaskHelper::getStatusKey('task_approver_edited'),
@@ -154,13 +146,25 @@ class TaskSiteController extends Controller
                 $arr['task_id'] = $request->task_id;
                 $arr['site_id'] = $row;
                 $arr['resource_id'] = $r;
+              	$arr['task_type'] = \Tritiyo\Task\Models\Task::where('id', $request->task_id)->first()->task_type;
+                $arr['task_for'] = \Tritiyo\Task\Models\Task::where('id', $request->task_id)->first()->task_for;
                 $arr['created_at'] = now();
                 $arr['updated_at'] = now();
+
+              	//dd($arr);
                 $t->insert($arr);
             }
         }
+
+
+        //Site completion status update to running
+        foreach($request->site_id as $key => $row){
+          $site = Site::find($row);
+          $site->completion_status = 'Running';
+          $site->save();
+        }
         //dd($request->all());
-        return redirect()->route('tasks.site.edit', $request->task_id)->with('message', 'Successfully saved')->with('status', 1);
+        //return redirect()->route('tasks.site.edit', $request->task_id)->with('message', 'Successfully saved')->with('status', 1);
         try {
             //$tasksite = $this->task->update($tasksite->id, $attributes);
 

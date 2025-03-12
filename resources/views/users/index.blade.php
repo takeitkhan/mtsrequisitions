@@ -75,27 +75,6 @@
         ])
     </nav>
 </section>
-@php
-    function enrollStatus($status) {
-        switch ($status) {
-          case 'Enroll':
-            $colorClass = '';
-            break;
-          case 'Terminated':
-            $colorClass = 'is-danger has-text-danger';
-            break;
-          case 'Long Leave':
-            $colorClass = 'is-link has-text-link';
-            break;
-            case 'Left Job':
-                $colorClass = 'is-warning has-text-warning';
-            break;
-          default:
-            $colorClass = '';
-        }
-        return $colorClass;
-    }
-@endphp
 @section('column_left')
     <div class="columns is-multiline">
         <?php

@@ -44,7 +44,9 @@ return array(
     'ce9671a430e4846b44e1c68c7611f9f5' => $vendorDir . '/mockery/mockery/library/Mockery.php',
     'f83ed111c2f97a0449abf067f157f418' => $vendorDir . '/pestphp/pest/src/Functions.php',
     '7d2876738dc0328edeb8a103c76cd8e7' => $vendorDir . '/pestphp/pest/src/Pest.php',
+    'eed9c7469f94573c0d97cc45de79b754' => $vendorDir . '/spatie/laravel-html/src/helpers.php',
     '320163ac6b93aebe3dc25b60a0533d56' => $vendorDir . '/spatie/laravel-ignition/src/helpers.php',
     '5cdf8efe73b6a62a9c8e24b366645b45' => $baseDir . '/app/Helpers/menu.php',
     '909d7fe8ac7113894ff79b66a1ff42d2' => $baseDir . '/app/Helpers/requisition_button.php',
+    'd21d43db5f6e840ee7b10744ec7fdf66' => $baseDir . '/app/Helpers/helpers.php',
 );

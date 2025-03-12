@@ -1,7 +1,10 @@
 <?php
+
 namespace Tritiyo\Site\Repositories;
 
 use Tritiyo\Site\Models\Site;
+use Illuminate\Pagination\Paginator;
+use DB;
 
 class SiteEloquent implements SiteInterface
 {
@@ -22,21 +25,20 @@ class SiteEloquent implements SiteInterface
     public function getAll()
     {
         return $this->model
-               ->orderBy('id', 'desc')
-               //->take(100)
-               ->paginate(10);
+            ->orderBy('id', 'desc')
+            //->take(100)
+            ->paginate(30);
     }
 
     public function getDataByFilter(array $options = [])
     {
         $default = [
             'search_key' => null,
-            'column' => !empty($field) ? $field : null,
-            'sort_type' => !empty($type) ? $type : null,
             'limit' => 10,
             'offset' => 0
         ];
         $no = array_merge($default, $options);
+        //dd($no);
 
         if (!empty($no['limit'])) {
             $limit = $no['limit'];
@@ -55,46 +57,43 @@ class SiteEloquent implements SiteInterface
         } else {
             $orderBy = 'id desc';
         }
-
-        if (!empty($no['search_key']) && $no['search_key'] != 'undefined') {
-            if ($totalrowcount == true) {
-                return $this->model
-                    ->orWhere('name', 'like', "%{$no['search_key']}%")
-                    ->paginate($limit)
-                    ->get()->count();
-            } else {
-                return $this->model
-                    //->leftJoin('productcategories', function ($join) {
-                    //    $join->on('products.id', '=', 'productcategories.main_pid');
-                    //})
-                    ->paginate($limit)
-                    //->toSql();
-                    ->get();
-            }
+        if (auth()->user()->isManager(auth()->user()->id)) {
+            $m = " WHERE mm.manager = " . auth()->user()->id;
         } else {
-            if ($totalrowcount == true) {
-                return $this->model
-                    ->whereRaw('parent_id IS NULL')
-                    //->whereRaw('FIND_IN_SET(' . implode(',', $categories) . ', categories)')
-                    //->whereRaw($price_btw)
-                    //->orderByRaw($orderBy)
-                    ->get()->count();
-            } else {
-                return $this->model
-                    ->leftJoin('productcategories AS pc', function ($join) {
-                        $join->on('products.id', '=', 'pc.main_pid');
-                    })
-                    //->whereIn('pc.term_id', $no['category'])
-                    //->whereRaw('parent_id IS NULL')
-                    //->whereRaw($price_btw)
-                    //->orderByRaw($orderBy)
-                    //->offset($offset)->limit($limit)
-                    //->toSql();
-                    //->select(['products.*', 'pc.*', 'products.id AS proid'])
-                    //->orderBy('products.id', 'desc')
-                    ->paginate(5);
-            }
+            $m = " ";
         }
+
+        if (!empty($no['search_key'])) {
+            //Nipun
+            $key = $no['search_key'];
+            $query = DB::select("SELECT * FROM (
+                  select `sites`.*, `projects`.`name`, `projects`.`code`, `projects`.`type`, `projects`.`customer`, `users`.`name` as pm_name, `projects`.`manager`
+                  from `sites`
+                  left join `projects` on `projects`.`id` = `sites`.`project_id`
+                  left join `users` on `users`.`id` = `projects`.`manager`
+                  where `sites`.`project_id` LIKE '%completed%'
+
+                  or `sites`.`location` LIKE '%$key%'
+                  or `sites`.`site_code` LIKE '%$key%'
+                  or `sites`.`material` LIKE '%$key%'
+                  or `sites`.`site_head` LIKE '%$key%'
+                  or `sites`.`budget` LIKE '%$key%'
+                  or `sites`.`completion_status` LIKE '%$key%'
+                  or `projects`.`name` LIKE '%$key%'
+                  or `projects`.`code` LIKE '%$key%'
+                  or `projects`.`type` LIKE '%$key%'
+                  or `projects`.`customer` LIKE '%$key%'
+                  or `users`.`name` LIKE '%$key%'
+                ) AS mm $m ");
+            $maxPage = 48;
+            $sites = new Paginator($query, $maxPage);
+        } else {
+            $sites = [];
+        }
+
+
+        //dd($sites);
+        return $sites;
     }
 
 
@@ -107,9 +106,9 @@ class SiteEloquent implements SiteInterface
     }
 
     /**
-    * @param $column
-    * @param $value
-    */
+     * @param $column
+     * @param $value
+     */
     public function getByAny($column, $value)
     {
         return $this->model->where($column, $value)->get();
@@ -138,5 +137,14 @@ class SiteEloquent implements SiteInterface
     {
         $this->getById($id)->delete();
         return true;
+    }
+
+    /**
+     * @param $column
+     * @param $value
+     */
+    public function getByAnyWithPaginate($column, $value)
+    {
+        return $this->model->where($column, $value)->paginate(20);
     }
 }

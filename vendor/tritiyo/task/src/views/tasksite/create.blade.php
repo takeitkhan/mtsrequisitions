@@ -17,6 +17,7 @@
             'spAddUrl' => route('tasks.create'),
             'spAllData' => route('tasks.index'),
             'spSearchData' => route('tasks.search'),
+            'spTitle' => 'Tasks',
         ])
 
         @include('component.filter_set', [
@@ -36,15 +37,8 @@
         }
         //$taskId = !empty($task_id) ?? $task_id;
         ?>
-        <p class="panel-tabs">
-            <a href="{{ !empty($taskId) ? route('tasks.edit', $taskId) : route('tasks.edit', $task_id)}}" class="">Task
-                Information</a>
-            <a class="is-active">Site Information</a>
-            <a href="{{ !empty($taskId) ? route('taskvehicle.create').'?task_id='.$taskId : route('taskvehicle.create', $task_id).'?task_id='.$taskId }}"
-               class="">Vehicle Information</a>
-            <a href="{{ !empty($taskId) ? route('taskmaterial.create').'?task_id='.$taskId : route('taskmaterial.create', $task_id).'?task_id='.$taskId }}"
-               class="">Material Information</a>
-        </p>
+
+        @include('task::layouts.tab')
 
         <div class="customContainer">
             <?php
@@ -59,7 +53,7 @@
                 $method = 'post';
             }
             ?>
-            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'files' => true, 'autocomplete' => 'off')) }}
+            {{ Form::open(array('url' => $routeUrl, 'method' => $method, 'value' => 'PATCH', 'id' => 'add_route', 'class' => 'task_site_table',  'files' => true, 'autocomplete' => 'off')) }}
 
             @if($task_id)
                 {{ Form::hidden('task_id', $task_id ?? '') }}
@@ -76,10 +70,19 @@
                         {{ Form::label('site_id', 'Sites', array('class' => 'label')) }}
                         <div class="control">
                             <div dclass="select is-multiple">
-                                @php $sites = \Tritiyo\Site\Models\Site::get() @endphp
+                                @php
+                                    $projectId = \Tritiyo\Task\Models\Task::where('id', $task_id)->first()->project_id;
+
+                                  $sites = \Tritiyo\Site\Models\Site::where('project_id', $projectId)
+                                                        ->where(function($query){
+                                                        $query->whereNull('completion_status')
+                                                        ->orWhere('completion_status',  'Running');
+                                                        })
+                                                        ->get();
+                                @endphp
                                 <select id="site_select" multiple="multiple" name="site_id[]" class="input" required>
                                     @foreach($sites as $site)
-                                        <option value="{{$site->id}}"
+                                        <option id="site{{$site->id}}" value="{{$site->id}}" data-result="{{$site->id}}"
 
                                         @if(isset($taskSites))
                                             @foreach($taskSites as $data)
@@ -101,21 +104,50 @@
                             <div sclass="select is-multiple">
 
                                 @php
-                                    $site_head_id = \Tritiyo\Task\Models\Task::select('site_head')->where('id', $taskId)->first();
-                                    $resources = \App\Models\User::where('role', '2')->select('name', 'id')
-                                    ->whereNotIn('id', array($site_head_id->site_head))
-                                    ->get();
+                                    $task_type = \Tritiyo\Task\Models\Task::where('id', $task_id)->first()->task_type;
+                                    if($task_type == 'emergency') {
+                                        $date = date('Y-m-d');
+                                    } else {
+                                        $date = date("Y-m-d", strtotime("+1 day"));
+                                    }
+
+                                    $resources = \DB::select("SELECT * FROM (SELECT *,
+                                                (SELECT site_head FROM tasks WHERE tasks.site_head = users.id AND tasks.task_for = '$date'   LIMIT 0,1) AS site_head,
+                                                (SELECT user_id FROM tasks WHERE tasks.site_head = users.id AND tasks.task_for = '$date'   LIMIT 0,1) AS manager,
+                                                (SELECT resource_id FROM tasks_site WHERE tasks_site.resource_id = users.id AND tasks_site.task_for = '$date'
+                                                GROUP BY tasks_site.site_id LIMIT 0,1) AS resource_used,
+                                                users.id AS useriddddd
+                                        FROM users WHERE users.role = 2 AND users.employee_status  NOT IN ( 'Terminated', 'Left Job', 'Long Leave', 'On Hold')
+                                    ) AS mm WHERE mm.site_head IS NULL AND mm.resource_used IS NULL ORDER BY id ASC");
                                 @endphp
-                                <select id='resource_select' multiple="multiple" name="resource_id[]" class="input"
-                                        required>
+                                <select id="resource_select" multiple="multiple" name="resource_id[]" class="input" required>
+                                    <option value="2" data-resultx="No">None</option>
+                                    @php
+                                        $all_resources = \Tritiyo\Task\Models\TaskSite::where('task_id', $task_id)->groupBy('resource_id')->get();
+                                    @endphp
+
+
+                                    @foreach($all_resources as $resource)
+                                        @php
+                                            $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
+                                        @endphp
+                                        <option value="{{$resource->resource_id}}"
+                                                data-result="{{ $count_result ?? NULL }}" selected>
+                                            {{ \App\Models\User::where('id', $resource->resource_id)->first()->name ?? NULL }}
+                                        </option>
+                                    @endforeach
+
+
                                     @foreach($resources as $resource)
-                                        <option value="{{$resource->id}}"
+                                        @php
+                                            $count_result = \Tritiyo\Task\Helpers\TaskHelper::getPendingBillCountStatus($resource->id);
+                                        @endphp
+                                        <option value="{{$resource->id}}" data-resultx="{{ $count_result ?? NULL }}"
                                         @if(isset($taskSites))
                                             @foreach($taskSites as $data)
                                                 {{$data->resource_id == $resource->id ? 'selected' : ''}}
                                                 @endforeach
-                                            @endif
-                                        >
+                                            @endif >
                                             {{ $resource->name }}
                                         </option>
                                     @endforeach
@@ -129,8 +161,8 @@
             <div class="columns">
                 <div class="column">
                     <div class="field is-grouped">
-                        <div class="control">
-                            <button class="button is-success is-small">Save Changes</button>
+                        <div class="control button_set">
+
                         </div>
                     </div>
                 </div>
@@ -138,6 +170,7 @@
             {{ Form::close() }}
         </div>
     </article>
+
 @endsection
 
 @section('column_right')
@@ -150,7 +183,9 @@
 
 @section('cusjs')
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    {{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
@@ -159,13 +194,82 @@
         $(document).ready(function () {
             $('#resource_select').select2({
                 placeholder: "Select Resource",
-                allowClear: true
+                allowClear: true,
             });
             $('#site_select').select2({
                 placeholder: "Select Site",
                 allowClear: true
             });
         });
+    </script>
+
+
+    <script>
+
+        $('select#resource_select').on('select2:select', function (e) {
+            // let v = $(this).find(':selected').data("resultx");
+            //let v = $(this).find(':selected:last').val()
+            //console.log("select2:select", e);
+            $('.button_set').empty();
+            if (!e) {
+                var args = "{}";
+            } else {
+                var args = JSON.stringify(e.params, function (key, value) {
+                    if (value && value.nodeName) return "[DOM node]";
+                    if (value instanceof $.Event) return "[$.Event]";
+                    //console.log(value.data);
+                    let resourceId = value.data.id;
+                    let name = value.data.text;
+                    $.ajax({
+                        type: "GET",
+                        url: "{{route('project.check.resource.pending.bills', '')}}/" + resourceId,
+                        success: function (data) {
+                            if (data == 'Yes') {
+                                //console.log(value.data.text);
+                                alert(value.data.text+'<br/>Your selected resource has atleast 3 pending bills. You can\'t select this resource.');
+                                $('.button_set').empty();
+                                $('#closeBtn').click(function(){
+                                    $('#resource_select option[value=' +resourceId+ ']:selected').prop('selected', false);
+                                    $("#resource_select").select2();
+                                })
+                            }else{
+                                let submitBtn = ' <button id="task_create_btn" class="button is-success is-small">Save Changes</button>';
+                                $('.button_set').empty().append(submitBtn);
+                            }
+
+                        }
+                    })
+
+                });
+            }
+        });
+
+        $('select#site_select').on('change', function () {
+            //let siteId = $(this).find(':selected').attr('data-result');
+            $('.button_set').empty();
+            let siteId = $(this).find(':selected:last').val();
+            //alert(siteId);
+            console.log(siteId);
+            $.ajax({
+                type: "GET",
+                url: "{{route('project.check.limit.site', '')}}/" + siteId,
+                success: function (data) {
+                    if (data == 'false') {
+                        console.log(data);
+                        alert('You exceeded limit of task for this site.');
+                        $('.button_set').empty();
+                        $('#closeBtn').click(function(){
+                            $('#site_select option[value = ' + siteId + ']').prop('selected', false);
+                            $("#site_select").select2();
+                        })
+                    }
+                    if (data == 'true') {
+                        let submitBtn = ' <button id="task_create_btn" class="button is-success is-small">Save Changes</button>';
+                        $('.button_set').empty().append(submitBtn);
+                    }
+                }
+            })
+        })
     </script>
 
 @endsection

@@ -163,11 +163,10 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
 
-        /*
-         * Package Service Providers...
-         */
+
         //Barryvdh\DomPDF\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Spatie\Html\HtmlServiceProvider::class,
         /*
          * Application Service Providers...
          */

@@ -3,7 +3,15 @@
 @section('title')
     Vehicles
 @endsection
-
+@if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+    @php
+        $addUrl = route('vehicles.create');
+    @endphp
+@else
+    @php
+        $addUrl = '#';
+    @endphp
+@endif
 <section class="hero is-white borderBtmLight">
     <nav class="level">
         @include('component.title_set', [
@@ -15,13 +23,18 @@
         @include('component.button_set', [
             'spShowButtonSet' => true,
             'spAddUrl' => null,
-            'spAddUrl' => route('vehicles.create'),
+            'spTitle' => 'Vehicles',
+            'spAddUrl' => $addUrl,
             'spAllData' => route('vehicles.index'),
             'spSearchData' => route('vehicles.search'),
+            'spTitle' => 'Vehicles',
         ])
 
         @include('component.filter_set', [
             'spShowFilterSet' => true,
+            'spAddUrl' => route('vehicles.create'),
+            'spAllData' => route('vehicles.index'),
+            'spSearchData' => route('vehicles.search'),
             'spPlaceholder' => 'Search vehicles...',
             'spMessage' => $message = $message ?? NULl,
             'spStatus' => $status = $status ?? NULL
@@ -30,10 +43,10 @@
 </section>
 
 @section('column_left')
-    <div class="columns is-multiline">
-        @if(!empty($vehicles))
+    @if(!empty($vehicles))
+        <div class="columns is-multiline">
             @foreach($vehicles as $vehicle)
-                <div class="column is-4">
+                <div class="column is-2">
                     <div class="borderedCol">
                         <article class="media">
                             <div class="media-content">
@@ -42,7 +55,7 @@
                                         <strong>
                                             <a href="{{ route('vehicles.show', $vehicle->id) }}"
                                                title="View route">
-                                               <strong> {{ $vehicle->name }} </strong>
+                                                <strong> {{ $vehicle->name }} </strong>
                                             </a>
                                         </strong>
                                         <br/>
@@ -63,13 +76,15 @@
                                            title="View user data">
                                             <span class="icon is-small"><i class="fas fa-eye"></i></span>
                                         </a>
-                                        <a href="{{ route('vehicles.edit', $vehicle->id) }}"
-                                           class="level-item"
-                                           title="View all transaction">
-                                            <span class="icon is-info is-small"><i class="fas fa-edit"></i></span>
-                                        </a>                                        
+                                        @if(auth()->user()->isAdmin(auth()->user()->id) || auth()->user()->isApprover(auth()->user()->id))
+                                            <a href="{{ route('vehicles.edit', $vehicle->id) }}"
+                                            class="level-item"
+                                            title="View all transaction">
+                                                <span class="icon is-info is-small"><i class="fas fa-edit"></i></span>
+                                            </a>
+                                        @endif
 
-                                        {!! delete_data('vehicles.destroy',  $vehicle->id) !!}
+                                        {{--                                        {!! delete_data('vehicles.destroy',  $vehicle->id) !!}--}}
                                     </div>
                                 </nav>
                             </div>
@@ -77,6 +92,14 @@
                     </div>
                 </div>
             @endforeach
-        @endif
-    </div>
+
+        </div>
+        <div class="pagination_wrap pagination is-centered">
+            @if(Request::get('key'))
+                {{ $vehicles->appends(['key' => Request::get('key')])->links('pagination::bootstrap-4') }}
+            @else
+                {{ $vehicles->links('pagination::bootstrap-4') }}
+            @endif
+        </div>
+    @endif
 @endsection
